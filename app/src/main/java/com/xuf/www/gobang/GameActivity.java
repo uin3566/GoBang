@@ -9,6 +9,8 @@ public class GameActivity extends BaseActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new GameFragment();
+        int gameMode = getIntent().getIntExtra(Constants.GAME_MODE, Constants.INVALID_MODE);
+
+        return GameFragment.getInstance(gameMode);
     }
 }

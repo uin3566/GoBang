@@ -6,6 +6,7 @@
               android:gravity="center">
 
     <com.xuf.www.gobang.GoBangBoard
+        android:id="@+id/go_bang_board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

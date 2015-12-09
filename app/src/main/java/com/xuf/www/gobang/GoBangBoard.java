@@ -105,6 +105,10 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
                                    11 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN};
     }
 
+    public void setGameMode(int gameMode){
+        mController.setGameMode(gameMode);
+    }
+
     @Override
     public void onRedraw() {
         invalidate();
@@ -118,7 +122,7 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
                 float y = event.getY();
                 int i = (int)(Math.rint((x - BOARD_MARGIN) / mGridWidth));
                 int j = (int)(Math.rint((y - BOARD_MARGIN) / mGridHeight));
-                mController.putChess(i, j, false);
+                mController.putChess(i, j);
                 break;
         }
         return super.onTouchEvent(event);

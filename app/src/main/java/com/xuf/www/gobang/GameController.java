@@ -10,6 +10,8 @@ public class GameController {
     public static final int CHESS_WHITE = 1;
     public static final int CHESS_BLACK = 2;
 
+    private int mGameMode = Constants.INVALID_MODE;
+    private boolean mIsWhiteChess = false;
     private ReDrawCallback mCallback;
     private int[][] mBoard = new int[BOARD_SIZE][BOARD_SIZE];
 
@@ -21,16 +23,28 @@ public class GameController {
         mCallback = callback;
     }
 
+    public void setGameMode(int gameMode){
+        mGameMode = gameMode;
+    }
+
     public int[][] getBoardData(){
         return mBoard;
     }
 
-    public void putChess(int x, int y, boolean whiteChess){
-        if (whiteChess){
+    public void putChess(int x, int y){
+        if (mBoard[x][y] != CHESS_NONE){
+            return;
+        }
+
+        if (mIsWhiteChess){
             mBoard[x][y] = CHESS_WHITE;
         } else {
             mBoard[x][y] = CHESS_BLACK;
         }
+        if (mGameMode == Constants.COUPE_MODE) {
+            mIsWhiteChess = !mIsWhiteChess;
+        }
+
         if (mCallback != null){
             mCallback.onRedraw();
         }
