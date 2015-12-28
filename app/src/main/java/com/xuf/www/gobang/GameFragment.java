@@ -19,13 +19,10 @@ import android.view.ViewGroup;
  * Created by Administrator on 2015/12/8.
  */
 public class GameFragment extends Fragment implements
-        LineWayDialog.ButtonClickListener
-       ,CompositionDialog.ButtonClickListener{
+       DialogManager.DialogButtonClickListener{
 
     private int mGameMode = Constants.INVALID_MODE;
-    private LineWayDialog mLineWayDialog;
-    private CompositionDialog mCompositionDialog;
-    private PeersDialog mPeersDialog;
+    private DialogManager mDialogManager;
 
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
@@ -50,11 +47,8 @@ public class GameFragment extends Fragment implements
         }
 
         if (mGameMode == Constants.ONLINE_MODE){
-            mLineWayDialog = new LineWayDialog();
-            mLineWayDialog.setLister(this);
-            mCompositionDialog = new CompositionDialog();
-            mCompositionDialog.setLister(this);
-            mPeersDialog = new PeersDialog();
+            mDialogManager = new DialogManager(getChildFragmentManager(), this);
+            showLineWayDialog();
         }
     }
 
@@ -72,9 +66,6 @@ public class GameFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        if (mGameMode == Constants.ONLINE_MODE){
-            showLineWayDialog();
-        }
     }
 
     @Override
@@ -82,6 +73,7 @@ public class GameFragment extends Fragment implements
         super.onDestroy();
         if (mReceiver != null){
             getActivity().unregisterReceiver(mReceiver);
+            mReceiver = null;
         }
     }
 
@@ -117,6 +109,7 @@ public class GameFragment extends Fragment implements
         switch (button){
             case BaseButtonDialog.BTN_1:
                 //todo:创建棋局
+                showWaitingDialog();
                 break;
             case BaseButtonDialog.BTN_2:
                 //todo:加入棋局
@@ -131,32 +124,39 @@ public class GameFragment extends Fragment implements
                         ToastUtil.showShort(getActivity(), "搜索Wifi对象失败");
                     }
                 });
-                mPeersDialog.show(getChildFragmentManager(), PeersDialog.TAG);
+                showPeersDialog();
                 break;
             case BaseButtonDialog.BTN_3:
                 if (mReceiver != null){
                     getActivity().unregisterReceiver(mReceiver);
+                    mReceiver = null;
                 }
                 dismissCompositionDialog();
                 break;
         }
     }
 
+    public void showWaitingDialog(){
+        mDialogManager.showWaitingDialog();
+    }
+
     public void onReceivePeerLists(WifiP2pDeviceList peers){
-        if (mPeersDialog != null){
-            mPeersDialog.onReceivePeerLists(peers);
-        }
+        mDialogManager.onReceivePeerLists(peers);
+    }
+
+    private void showPeersDialog(){
+        mDialogManager.showPeersDialog();
     }
 
     private void showLineWayDialog(){
-        mLineWayDialog.show(getChildFragmentManager(), LineWayDialog.TAG);
+        mDialogManager.showLineWayDialog();
     }
 
     private void showCompositionDialog(){
-        mCompositionDialog.show(getChildFragmentManager(), CompositionDialog.TAG);
+        mDialogManager.showCompositionDialog();
     }
 
     private void dismissCompositionDialog(){
-        mCompositionDialog.dismiss();
+        mDialogManager.dismissCompositionDialog();
     }
 }

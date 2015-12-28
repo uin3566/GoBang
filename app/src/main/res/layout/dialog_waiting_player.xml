@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="150dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:text="创建棋局"
+            android:textSize="20dp"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_below="@id/tv_title"
+            android:text="对方现在可以加入游戏"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <Button
+                android:id="@+id/btn_begin"
+                android:text="开始"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:text="取消"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
