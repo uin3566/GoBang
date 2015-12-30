@@ -1,5 +1,6 @@
 package com.xuf.www.gobang;
 
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,7 +11,8 @@ import android.support.v4.app.FragmentTransaction;
  */
 public class DialogManager implements
         LineWayDialog.ButtonClickListener
-       ,CompositionDialog.ButtonClickListener{
+       ,CompositionDialog.ButtonClickListener
+       ,PeersDialog.PeerConnectListener{
 
     private FragmentManager mFragmentManager;
 
@@ -29,7 +31,15 @@ public class DialogManager implements
         mCompositionDialog = new CompositionDialog();
         mCompositionDialog.setLister(this);
         mPeersDialog = new PeersDialog();
+        mPeersDialog.setListener(this);
         mWaitingDialog = new WaitingPlayerDialog();
+    }
+
+    @Override
+    public void onPeerConnect(WifiP2pDevice device) {
+        if (mListener != null){
+            mListener.onPeerConnect(device);
+        }
     }
 
     @Override
@@ -84,5 +94,6 @@ public class DialogManager implements
     public interface DialogButtonClickListener{
         public void onLineWayButtonClick(int button);
         public void onCompositionButtonClick(int button);
+        public void onPeerConnect(WifiP2pDevice device);
     }
 }
