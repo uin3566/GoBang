@@ -38,7 +38,6 @@ public class DialogManager implements
     @Override
     public void onPeerConnect(WifiP2pDevice device) {
         if (mListener != null){
-            mListener.onPeerConnect(device);
         }
     }
 
@@ -54,10 +53,6 @@ public class DialogManager implements
         if (mListener != null){
             mListener.onCompositionButtonClick(button);
         }
-    }
-
-    public void onReceivePeerLists(WifiP2pDeviceList peers){
-        mPeersDialog.onReceivePeerLists(peers);
     }
 
     public void showWaitingDialog(){
@@ -94,6 +89,5 @@ public class DialogManager implements
     public interface DialogButtonClickListener{
         public void onLineWayButtonClick(int button);
         public void onCompositionButtonClick(int button);
-        public void onPeerConnect(WifiP2pDevice device);
     }
 }
