@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +27,15 @@ public class PeersDialog extends DialogFragment {
 
     public static final String TAG = "PeersDialog";
 
+    private PeerConnectListener mListener;
+
     private ListView mListView;
-    private ArrayAdapter mAdapter;
-    private List<String> mData = new ArrayList<>();
+    private DeviceAdapter mAdapter;
+    private List<WifiP2pDevice> mData = new ArrayList<>();
+
+    public void setListener(PeerConnectListener listener){
+        mListener = listener;
+    }
 
     @Nullable
     @Override
@@ -35,10 +44,57 @@ public class PeersDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_peer_list, container, false);
 
         mListView = (ListView)view.findViewById(R.id.lv_peers);
-        mAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, mData);
+        mAdapter = new DeviceAdapter();
         mListView.setAdapter(mAdapter);
 
         return view;
+    }
+
+    private class DeviceAdapter extends BaseAdapter{
+        @Override
+        public int getCount() {
+            return mData.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mData.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null){
+                convertView = LayoutInflater.from(getActivity()).inflate(R.layout.item_device, parent, false);
+                holder = new ViewHolder(convertView);
+                convertView.setTag(holder);
+            }
+
+            String device = mData.get(position).deviceName;
+            holder = (ViewHolder)convertView.getTag();
+            holder.device.setText(device);
+            holder.device.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onPeerConnect(mData.get(position));
+                }
+            });
+
+            return convertView;
+        }
+
+        private class ViewHolder{
+            public TextView device;
+
+            public ViewHolder(View view){
+                device = (TextView)view.findViewById(R.id.tv_device);
+            }
+        }
     }
 
     @TargetApi(14)
@@ -52,8 +108,12 @@ public class PeersDialog extends DialogFragment {
         }
         mData.clear();
         for (Object device : collection){
-            mData.add(((WifiP2pDevice)device).deviceName);
+            mData.add((WifiP2pDevice)device);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    public interface PeerConnectListener{
+        void onPeerConnect(WifiP2pDevice device);
     }
 }
