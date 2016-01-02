@@ -97,22 +97,6 @@ public class PeersDialog extends DialogFragment {
         }
     }
 
-    @TargetApi(14)
-    public void onReceivePeerLists(WifiP2pDeviceList peers){
-        if (peers == null){
-            return;
-        }
-        Collection collection = peers.getDeviceList();
-        if (collection.isEmpty()){
-            return;
-        }
-        mData.clear();
-        for (Object device : collection){
-            mData.add((WifiP2pDevice)device);
-        }
-        mAdapter.notifyDataSetChanged();
-    }
-
     public interface PeerConnectListener{
         void onPeerConnect(WifiP2pDevice device);
     }
