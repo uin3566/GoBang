@@ -16,6 +16,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.peak.salut.SalutDevice;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +33,7 @@ public class PeersDialog extends DialogFragment {
 
     private ListView mListView;
     private DeviceAdapter mAdapter;
-    private List<WifiP2pDevice> mData = new ArrayList<>();
+    private List<SalutDevice> mData = new ArrayList<>();
 
     public void setListener(PeerConnectListener listener){
         mListener = listener;
@@ -50,7 +52,19 @@ public class PeersDialog extends DialogFragment {
         return view;
     }
 
+    public void updatePeers(List<SalutDevice> data){
+        mAdapter.setData(data);
+    }
+
     private class DeviceAdapter extends BaseAdapter{
+        public void setData(List<SalutDevice> data){
+            mData.clear();
+            for (SalutDevice device : data){
+                mData.add(device);
+            }
+            notifyDataSetChanged();
+        }
+
         @Override
         public int getCount() {
             return mData.size();
@@ -98,6 +112,6 @@ public class PeersDialog extends DialogFragment {
     }
 
     public interface PeerConnectListener{
-        void onPeerConnect(WifiP2pDevice device);
+        void onPeerConnect(SalutDevice device);
     }
 }
