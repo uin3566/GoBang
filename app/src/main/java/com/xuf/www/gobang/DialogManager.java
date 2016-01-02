@@ -1,10 +1,12 @@
 package com.xuf.www.gobang;
 
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
+import com.peak.salut.SalutDevice;
+
+import java.util.List;
 
 /**
  * Created by lenov0 on 2015/12/28.
@@ -21,9 +23,9 @@ public class DialogManager implements
     private PeersDialog mPeersDialog;
     private WaitingPlayerDialog mWaitingDialog;
 
-    private DialogButtonClickListener mListener;
+    private DialogsCallback mListener;
 
-    public DialogManager(FragmentManager manager, DialogButtonClickListener listener){
+    public DialogManager(FragmentManager manager, DialogsCallback listener){
         mFragmentManager = manager;
         mListener = listener;
         mLineWayDialog = new LineWayDialog();
@@ -36,8 +38,9 @@ public class DialogManager implements
     }
 
     @Override
-    public void onPeerConnect(WifiP2pDevice device) {
+    public void onPeerConnect(SalutDevice device) {
         if (mListener != null){
+            mListener.onPeerConnect(device);
         }
     }
 
@@ -53,6 +56,10 @@ public class DialogManager implements
         if (mListener != null){
             mListener.onCompositionButtonClick(button);
         }
+    }
+
+    public void updatePeers(List<SalutDevice> data){
+        mPeersDialog.updatePeers(data);
     }
 
     public void showWaitingDialog(){
@@ -86,8 +93,9 @@ public class DialogManager implements
         mCompositionDialog.dismiss();
     }
 
-    public interface DialogButtonClickListener{
+    public interface DialogsCallback {
         public void onLineWayButtonClick(int button);
         public void onCompositionButtonClick(int button);
+        public void onPeerConnect(SalutDevice device);
     }
 }
