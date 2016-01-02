@@ -83,11 +83,16 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-23.1.1" level="project" />
+    <orderEntry type="library" exported="" name="Salut-v0.4.9" level="project" />
+    <orderEntry type="library" exported="" name="logansquare-1.0.6" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.5.1" level="project" />
+    <orderEntry type="library" exported="" name="asyncjob-library-1.0.3" level="project" />
+    <orderEntry type="library" exported="" name="guava-18.0" level="project" />
   </component>
 </module>
 
