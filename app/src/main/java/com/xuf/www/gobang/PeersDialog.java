@@ -48,7 +48,7 @@ public class PeersDialog extends DialogFragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCancelButtonClicked();
+                mListener.onPeerCancel();
             }
         });
 
@@ -116,6 +116,6 @@ public class PeersDialog extends DialogFragment {
 
     public interface PeerDialogCallback {
         void onPeerConnect(SalutDevice device);
-        void onCancelButtonClicked();
+        void onPeerCancel();
     }
 }

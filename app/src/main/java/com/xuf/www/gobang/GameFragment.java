@@ -33,6 +33,7 @@ public class GameFragment extends Fragment implements
     private SalutServiceData mServiceData;
     private SalutDataReceiver mDataReceiver;
     private Salut mSalut;
+    private SalutDevice mPeerDevice;
 
     private boolean mIsHost;
     private Context mContext;
@@ -93,6 +94,10 @@ public class GameFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mContext = null;
+        if (mGameMode != Constants.ONLINE_MODE){
+            return;
+        }
         if (mIsHost){
             mSalut.stopNetworkService(true);
         } else {
@@ -131,6 +136,8 @@ public class GameFragment extends Fragment implements
                         if (mContext != null) {
                             ToastUtil.showShort(mContext, "对方已连接成功");
                         }
+                        enableWaitingBegin();
+                        mPeerDevice = device;
                     }
                 });
                 showWaitingDialog();
@@ -162,16 +169,36 @@ public class GameFragment extends Fragment implements
     }
 
     @Override
+    public void onWaitingBegin() {
+        dismissAll();
+        mSalut.sendToDevice(mPeerDevice, "abc", new SalutCallback() {
+            @Override
+            public void call() {
+                if (mContext != null){
+                    ToastUtil.showShort(mContext, "数据发送失败");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onWaitingCancel() {
+        dismissWaitingDialog();
+        mSalut.stopNetworkService(true);
+    }
+
+    @Override
     public void onPeerClickCancel() {
         dismissPeersDialog();
     }
 
     @Override
-    public void onPeerConnect(SalutDevice device) {
+    public void onPeerConnect(final SalutDevice device) {
         mSalut.registerWithHost(device, new SalutCallback() {
             @Override
             public void call() {
                 Log.d(TAG, "We're now registered.");
+                mPeerDevice = device;
             }
         }, new SalutCallback() {
             @Override
@@ -183,7 +210,11 @@ public class GameFragment extends Fragment implements
 
     @Override
     public void onDataReceived(Object o) {
-
+        if (!mIsHost){
+            dismissPeersDialog();
+            String str = (String)o;
+            ToastUtil.showShort(mContext, str);
+        }
     }
 
     public void showWaitingDialog(){
@@ -208,5 +239,17 @@ public class GameFragment extends Fragment implements
 
     private void dismissPeersDialog(){
         mDialogManager.dismissPeersDialog();
+    }
+
+    private void dismissWaitingDialog(){
+        mDialogManager.dismissWaitingDialog();
+    }
+
+    private void enableWaitingBegin(){
+        mDialogManager.enableWaitingBegin();
+    }
+
+    private void dismissAll(){
+        mDialogManager.dismissAll();
     }
 }

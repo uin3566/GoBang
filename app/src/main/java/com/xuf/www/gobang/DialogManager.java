@@ -14,7 +14,8 @@ import java.util.List;
 public class DialogManager implements
         LineWayDialog.ButtonClickListener
        ,CompositionDialog.ButtonClickListener
-       ,PeersDialog.PeerDialogCallback {
+       ,PeersDialog.PeerDialogCallback
+       ,WaitingPlayerDialog.WaitingDialogCallback{
 
     private FragmentManager mFragmentManager;
 
@@ -38,6 +39,7 @@ public class DialogManager implements
         mPeersDialog.setListener(this);
         mPeersDialog.setCancelable(false);
         mWaitingDialog = new WaitingPlayerDialog();
+        mWaitingDialog.setListener(this);
         mWaitingDialog.setCancelable(false);
     }
 
@@ -49,9 +51,23 @@ public class DialogManager implements
     }
 
     @Override
-    public void onCancelButtonClicked() {
+    public void onPeerCancel() {
         if (mListener != null){
             mListener.onPeerClickCancel();
+        }
+    }
+
+    @Override
+    public void onWaitingBegin() {
+        if (mListener != null){
+            mListener.onWaitingBegin();
+        }
+    }
+
+    @Override
+    public void onWaitingCancel() {
+        if (mListener != null){
+            mListener.onWaitingCancel();
         }
     }
 
@@ -75,6 +91,14 @@ public class DialogManager implements
 
     public void showWaitingDialog(){
         mWaitingDialog.show(preShowDialog(WaitingPlayerDialog.TAG), WaitingPlayerDialog.TAG);
+    }
+
+    public void dismissWaitingDialog(){
+        mWaitingDialog.dismiss();
+    }
+
+    public void enableWaitingBegin(){
+        mWaitingDialog.setBeginEnable();
     }
 
     public void showPeersDialog(){
@@ -108,10 +132,18 @@ public class DialogManager implements
         mPeersDialog.dismiss();
     }
 
+    public void dismissAll(){
+        mWaitingDialog.dismiss();
+        mCompositionDialog.dismiss();
+        mLineWayDialog.dismiss();
+    }
+
     public interface DialogsCallback {
         public void onLineWayButtonClick(int button);
         public void onCompositionButtonClick(int button);
         public void onPeerConnect(SalutDevice device);
         public void onPeerClickCancel();
+        public void onWaitingBegin();
+        public void onWaitingCancel();
     }
 }
