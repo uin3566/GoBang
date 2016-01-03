@@ -14,7 +14,7 @@ import java.util.List;
 public class DialogManager implements
         LineWayDialog.ButtonClickListener
        ,CompositionDialog.ButtonClickListener
-       ,PeersDialog.PeerConnectListener{
+       ,PeersDialog.PeerDialogCallback {
 
     private FragmentManager mFragmentManager;
 
@@ -30,17 +30,28 @@ public class DialogManager implements
         mListener = listener;
         mLineWayDialog = new LineWayDialog();
         mLineWayDialog.setLister(this);
+        mLineWayDialog.setCancelable(false);
         mCompositionDialog = new CompositionDialog();
         mCompositionDialog.setLister(this);
+        mCompositionDialog.setCancelable(false);
         mPeersDialog = new PeersDialog();
         mPeersDialog.setListener(this);
+        mPeersDialog.setCancelable(false);
         mWaitingDialog = new WaitingPlayerDialog();
+        mWaitingDialog.setCancelable(false);
     }
 
     @Override
     public void onPeerConnect(SalutDevice device) {
         if (mListener != null){
             mListener.onPeerConnect(device);
+        }
+    }
+
+    @Override
+    public void onCancelButtonClicked() {
+        if (mListener != null){
+            mListener.onPeerClickCancel();
         }
     }
 
@@ -93,9 +104,14 @@ public class DialogManager implements
         mCompositionDialog.dismiss();
     }
 
+    public void dismissPeersDialog(){
+        mPeersDialog.dismiss();
+    }
+
     public interface DialogsCallback {
         public void onLineWayButtonClick(int button);
         public void onCompositionButtonClick(int button);
         public void onPeerConnect(SalutDevice device);
+        public void onPeerClickCancel();
     }
 }

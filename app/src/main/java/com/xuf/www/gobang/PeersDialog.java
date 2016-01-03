@@ -1,8 +1,5 @@
 package com.xuf.www.gobang;
 
-import android.annotation.TargetApi;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -10,16 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.peak.salut.SalutDevice;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,13 +24,13 @@ public class PeersDialog extends DialogFragment {
 
     public static final String TAG = "PeersDialog";
 
-    private PeerConnectListener mListener;
+    private PeerDialogCallback mListener;
 
     private ListView mListView;
     private DeviceAdapter mAdapter;
     private List<SalutDevice> mData = new ArrayList<>();
 
-    public void setListener(PeerConnectListener listener){
+    public void setListener(PeerDialogCallback listener){
         mListener = listener;
     }
 
@@ -48,6 +43,14 @@ public class PeersDialog extends DialogFragment {
         mListView = (ListView)view.findViewById(R.id.lv_peers);
         mAdapter = new DeviceAdapter();
         mListView.setAdapter(mAdapter);
+
+        Button cancel = (Button)view.findViewById(R.id.btn_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onCancelButtonClicked();
+            }
+        });
 
         return view;
     }
@@ -111,7 +114,8 @@ public class PeersDialog extends DialogFragment {
         }
     }
 
-    public interface PeerConnectListener{
+    public interface PeerDialogCallback {
         void onPeerConnect(SalutDevice device);
+        void onCancelButtonClicked();
     }
 }
