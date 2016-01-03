@@ -1,6 +1,7 @@
 package com.xuf.www.gobang;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,9 @@ public class GameFragment extends Fragment implements
     private SalutDataReceiver mDataReceiver;
     private Salut mSalut;
 
+    private boolean mIsHost;
+    private Context mContext;
+
     public static GameFragment getInstance(int gameMode){
         Bundle args = new Bundle();
         args.putInt(Constants.GAME_MODE, gameMode);
@@ -52,12 +56,17 @@ public class GameFragment extends Fragment implements
         }
 
         if (mGameMode == Constants.ONLINE_MODE){
+            mContext = getActivity();
             mDataReceiver = new SalutDataReceiver(getActivity(), this);
             mServiceData = new SalutServiceData("server", 50489, "instance");
             mSalut = new Salut(mDataReceiver, mServiceData, new SalutCallback() {
                 @Override
                 public void call() {
                     Log.e(TAG, "Sorry, but this device does not support WiFi Direct.");
+                    if (mContext != null){
+                        ToastUtil.showShort(mContext, "抱歉，您的设备不支持wifi直连");
+                    }
+                    getActivity().finish();
                 }
             });
             mDialogManager = new DialogManager(getChildFragmentManager(), this);
@@ -84,22 +93,77 @@ public class GameFragment extends Fragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mIsHost){
+            mSalut.stopNetworkService(true);
+        } else {
+            mSalut.unregisterClient(true);
+        }
     }
 
     @Override
     public void onLineWayButtonClick(int button) {
         switch (button){
-            //返回
+            //蓝牙连接
             case BaseButtonDialog.BTN_1:
                 break;
             //wifi连接
             case BaseButtonDialog.BTN_2:
                 showCompositionDialog();
                 break;
-            //蓝牙连接
+            //返回
             case BaseButtonDialog.BTN_3:
+                getActivity().finish();
                 break;
         }
+    }
+
+    @TargetApi(14)
+    @Override
+    public void onCompositionButtonClick(int button) {
+        switch (button){
+            case BaseButtonDialog.BTN_1:
+                //todo:创建棋局
+                mIsHost = true;
+                mSalut.startNetworkService(new SalutDeviceCallback() {
+                    @Override
+                    public void call(SalutDevice device) {
+                        Log.d(TAG, device.readableName + " has connected!");
+                        if (mContext != null) {
+                            ToastUtil.showShort(mContext, "对方已连接成功");
+                        }
+                    }
+                });
+                showWaitingDialog();
+                break;
+            case BaseButtonDialog.BTN_2:
+                //todo:加入棋局
+                mIsHost = false;
+                mSalut.discoverWithTimeout(new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.d(TAG, "Look at all these devices! " + mSalut.foundDevices.toString());
+                        mDialogManager.updatePeers(mSalut.foundDevices);
+                    }
+                }, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.d(TAG, "Bummer, we didn't find anyone. ");
+                        if (mContext != null){
+                            ToastUtil.showShort(mContext, "查询超时，请重试");
+                        }
+                    }
+                }, 5000);
+                showPeersDialog();
+                break;
+            case BaseButtonDialog.BTN_3:
+                dismissCompositionDialog();
+                break;
+        }
+    }
+
+    @Override
+    public void onPeerClickCancel() {
+        dismissPeersDialog();
     }
 
     @Override
@@ -115,44 +179,6 @@ public class GameFragment extends Fragment implements
                 Log.d(TAG, "We failed to register.");
             }
         });
-    }
-
-    @TargetApi(14)
-    @Override
-    public void onCompositionButtonClick(int button) {
-        switch (button){
-            case BaseButtonDialog.BTN_1:
-                //todo:创建棋局
-                mSalut.startNetworkService(new SalutDeviceCallback() {
-                    @Override
-                    public void call(SalutDevice device) {
-                        Log.d(TAG, device.readableName + " has connected!");
-                        ToastUtil.showShort(getActivity(), "对方已连接成功");
-                    }
-                });
-                showWaitingDialog();
-                break;
-            case BaseButtonDialog.BTN_2:
-                //todo:加入棋局
-                mSalut.discoverWithTimeout(new SalutCallback() {
-                    @Override
-                    public void call() {
-                        Log.d(TAG, "Look at all these devices! " + mSalut.foundDevices.toString());
-                        mDialogManager.updatePeers(mSalut.foundDevices);
-                    }
-                }, new SalutCallback() {
-                    @Override
-                    public void call() {
-                        Log.d(TAG, "Bummer, we didn't find anyone. ");
-                        ToastUtil.showShort(getActivity(), "查询超时，请重试");
-                    }
-                }, 5000);
-                showPeersDialog();
-                break;
-            case BaseButtonDialog.BTN_3:
-                dismissCompositionDialog();
-                break;
-        }
     }
 
     @Override
@@ -178,5 +204,9 @@ public class GameFragment extends Fragment implements
 
     private void dismissCompositionDialog(){
         mDialogManager.dismissCompositionDialog();
+    }
+
+    private void dismissPeersDialog(){
+        mDialogManager.dismissPeersDialog();
     }
 }
