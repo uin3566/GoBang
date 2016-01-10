@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.peak.salut.Callbacks.SalutCallback;
 import com.peak.salut.Callbacks.SalutDataCallback;
 import com.peak.salut.Callbacks.SalutDeviceCallback;
@@ -17,6 +18,8 @@ import com.peak.salut.Salut;
 import com.peak.salut.SalutDataReceiver;
 import com.peak.salut.SalutDevice;
 import com.peak.salut.SalutServiceData;
+
+import java.io.IOException;
 
 /**
  * Created by Administrator on 2015/12/8.
@@ -99,9 +102,9 @@ public class GameFragment extends Fragment implements
             return;
         }
         if (mIsHost){
-            mSalut.stopNetworkService(true);
+            mSalut.stopNetworkService(false);
         } else {
-            mSalut.unregisterClient(true);
+            mSalut.unregisterClient(false);
         }
     }
 
@@ -171,12 +174,13 @@ public class GameFragment extends Fragment implements
     @Override
     public void onWaitingBegin() {
         dismissAll();
-        mSalut.sendToDevice(mPeerDevice, "abc", new SalutCallback() {
+        Message myMessage = new Message();
+        myMessage.mMessage = "See you on the other side!";
+
+        mSalut.sendToDevice(mPeerDevice, myMessage, new SalutCallback() {
             @Override
             public void call() {
-                if (mContext != null){
-                    ToastUtil.showShort(mContext, "数据发送失败");
-                }
+                Log.e(TAG, "Oh no! The data failed to send.");
             }
         });
     }
@@ -184,7 +188,7 @@ public class GameFragment extends Fragment implements
     @Override
     public void onWaitingCancel() {
         dismissWaitingDialog();
-        mSalut.stopNetworkService(true);
+        mSalut.stopNetworkService(false);
     }
 
     @Override
@@ -210,10 +214,16 @@ public class GameFragment extends Fragment implements
 
     @Override
     public void onDataReceived(Object o) {
+        Log.d(TAG, "received data");
         if (!mIsHost){
-            dismissPeersDialog();
-            String str = (String)o;
-            ToastUtil.showShort(mContext, str);
+            try {
+                String str = (String)o;
+                Message msg = LoganSquare.parse(str, Message.class);
+                dismissPeersDialog();
+                ToastUtil.showShort(mContext, msg.mMessage);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
     }
 
