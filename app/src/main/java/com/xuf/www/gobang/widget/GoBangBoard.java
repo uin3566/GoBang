@@ -1,4 +1,4 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,28 +6,29 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Comparator;
+import com.xuf.www.gobang.Constants;
+import com.xuf.www.gobang.R;
 
 /**
  * Created by Administrator on 2015/12/8.
  */
-public class GoBangBoard extends View implements GameController.ReDrawCallback {
+public class GoBangBoard extends View {
 
-    private static final int LINE_COUNT = GameController.BOARD_SIZE;
+    private static final int LINE_COUNT = 15;
     private static final int BOARD_MARGIN = 40;
     private static final int HALF_CHESS_SIZE = 35;
 
-    private static final int POINT_IDLE = GameController.CHESS_NONE;
-    private static final int POINT_WHITE = GameController.CHESS_WHITE;
-    private static final int POINT_BLACK = GameController.CHESS_BLACK;
+    private static final int CHESS_NONE = 0;
+    private static final int CHESS_WHITE = 1;
+    private static final int CHESS_BLACK = 2;
+    private static final int BOARD_SIZE = LINE_COUNT;
 
-    private GameController mController;
+    private int[][] mBoard = new int[BOARD_SIZE][BOARD_SIZE];
 
     private Bitmap mWhiteChessBitmap;
     private Bitmap mBlackChessBitmap;
@@ -42,6 +43,8 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
     private int mLineCount;
     private float mGridWidth;
     private float mGridHeight;
+
+    private boolean mCurrentChessWhite = true;
 
     public GoBangBoard(Context context) {
         super(context);
@@ -59,9 +62,6 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
     }
 
     private void init(Context context){
-        mController = new GameController();
-        mController.setCallback(this);
-
         mLinePaint = new Paint();
         mLinePaint.setAntiAlias(true);
         mLinePaint.setColor(Color.BLACK);
@@ -73,6 +73,10 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
 
         mBlackChessBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chess_black);
         mWhiteChessBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chess_white);
+    }
+
+    public void setCurrentChessWhite(boolean currentChessWhite){
+        mCurrentChessWhite = currentChessWhite;
     }
 
     private void calcLinePoints(){
@@ -105,15 +109,6 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
                                    11 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN};
     }
 
-    public void setGameMode(int gameMode){
-        mController.setGameMode(gameMode);
-    }
-
-    @Override
-    public void onRedraw() {
-        invalidate();
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()){
@@ -122,7 +117,7 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
                 float y = event.getY();
                 int i = (int)(Math.rint((x - BOARD_MARGIN) / mGridWidth));
                 int j = (int)(Math.rint((y - BOARD_MARGIN) / mGridHeight));
-                mController.putChess(i, j);
+                putChess(i, j);
                 break;
         }
         return super.onTouchEvent(event);
@@ -144,6 +139,20 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
         drawChess(canvas);
     }
 
+    public void putChess(int x, int y){
+        if (mBoard[x][y] != CHESS_NONE){
+            return;
+        }
+
+        if (mCurrentChessWhite){
+            mBoard[x][y] = CHESS_WHITE;
+        } else {
+            mBoard[x][y] = CHESS_BLACK;
+        }
+
+        invalidate();
+    }
+
     private void drawLines(Canvas canvas){
         canvas.drawLines(mHorizontalLinePoints, mLinePaint);
         canvas.drawLines(mVerticalLinePoints, mLinePaint);
@@ -154,15 +163,14 @@ public class GoBangBoard extends View implements GameController.ReDrawCallback {
     }
 
     private void drawChess(Canvas canvas){
-        int board[][] = mController.getBoardData();
         for (int row = 0; row < LINE_COUNT; row++){
             for (int col = 0; col < LINE_COUNT; col++){
                 float x = BOARD_MARGIN + col * mGridWidth;
                 float y = BOARD_MARGIN + row * mGridHeight;
                 RectF rectF = new RectF(x - HALF_CHESS_SIZE, y - HALF_CHESS_SIZE, x + HALF_CHESS_SIZE, y + HALF_CHESS_SIZE);
-                if (board[col][row] == POINT_WHITE){
+                if (mBoard[col][row] == CHESS_WHITE){
                     canvas.drawBitmap(mWhiteChessBitmap, null, rectF, null);
-                } else if (board[col][row] == POINT_BLACK){
+                } else if (mBoard[col][row] == CHESS_BLACK){
                     canvas.drawBitmap(mBlackChessBitmap, null, rectF, null);
                 }
             }

@@ -1,4 +1,4 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.util;
 
 import android.content.Context;
 import android.widget.Toast;

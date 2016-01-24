@@ -1,4 +1,4 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.bean;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;

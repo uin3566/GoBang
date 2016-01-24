@@ -1,10 +1,12 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.view.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
+import com.xuf.www.gobang.R;
 
 /**
  * Created by Administrator on 2015/12/8.
