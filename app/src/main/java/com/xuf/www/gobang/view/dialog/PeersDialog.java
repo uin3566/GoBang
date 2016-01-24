@@ -1,4 +1,4 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.view.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.peak.salut.SalutDevice;
+import com.xuf.www.gobang.R;
 
 import java.util.ArrayList;
 import java.util.List;

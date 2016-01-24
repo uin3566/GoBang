@@ -1,4 +1,4 @@
-package com.xuf.www.gobang;
+package com.xuf.www.gobang.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.xuf.www.gobang.Constants;
+import com.xuf.www.gobang.R;
+import com.xuf.www.gobang.view.activity.GameActivity;
 
 /**
  * Created by Administrator on 2015/12/9.
@@ -27,11 +31,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private void initView(View root){
         TextView aiModeTextView = (TextView) root.findViewById(R.id.tv_ai_mode);
         TextView coupeTextView = (TextView) root.findViewById(R.id.tv_coupe_mode);
-        TextView onlineTextView = (TextView) root.findViewById(R.id.tv_online_mode);
+        TextView wifiTextView = (TextView) root.findViewById(R.id.tv_wifi_mode);
+        TextView blueToothTextView = (TextView) root.findViewById(R.id.tv_blue_tooth_mode);
 
         aiModeTextView.setOnClickListener(this);
         coupeTextView.setOnClickListener(this);
-        onlineTextView.setOnClickListener(this);
+        wifiTextView.setOnClickListener(this);
+        blueToothTextView.setOnClickListener(this);
     }
 
     @Override
@@ -44,8 +50,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             case R.id.tv_coupe_mode:
                 intent.putExtra(Constants.GAME_MODE, Constants.COUPE_MODE);
                 break;
-            case R.id.tv_online_mode:
-                intent.putExtra(Constants.GAME_MODE, Constants.ONLINE_MODE);
+            case R.id.tv_wifi_mode:
+                intent.putExtra(Constants.GAME_MODE, Constants.WIFI_MODE);
+                break;
+            case R.id.tv_blue_tooth_mode:
+                intent.putExtra(Constants.GAME_MODE, Constants.BLUE_TOOTH_MODE);
                 break;
         }
         startActivity(intent);

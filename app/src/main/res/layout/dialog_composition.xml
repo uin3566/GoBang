@@ -7,19 +7,22 @@
     android:padding="20dp">
 
     <Button
-        android:id="@+id/btn_1"
+        android:id="@+id/btn_create_game"
+        android:text="创建游戏"
         android:gravity="center"
         android:layout_width="100dp"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btn_2"
+        android:id="@+id/btn_join_game"
+        android:text="加入游戏"
         android:gravity="center"
         android:layout_width="100dp"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btn_3"
+        android:id="@+id/btn_cancel"
+        android:text="取   消"
         android:gravity="center"
         android:layout_width="100dp"
         android:layout_height="wrap_content" />

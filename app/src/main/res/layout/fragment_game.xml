@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:gravity="center">
 
-    <com.xuf.www.gobang.GoBangBoard
+    <com.xuf.www.gobang.widget.GoBangBoard
         android:id="@+id/go_bang_board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

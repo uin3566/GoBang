@@ -26,8 +26,18 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/tv_online_mode"
-        android:text="联机对战"
+        android:id="@+id/tv_wifi_mode"
+        android:text="WIFI对战"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_margin="5dp"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tv_blue_tooth_mode"
+        android:text="蓝牙对战"
         android:textSize="20sp"
         android:gravity="center"
         android:padding="5dp"
