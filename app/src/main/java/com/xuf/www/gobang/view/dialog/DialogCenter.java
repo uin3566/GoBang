@@ -60,6 +60,16 @@ public class DialogCenter {
         mPeersDialog.updatePeers(data);
     }
 
+    public void dismissWaitingAndComposition() {
+        mWaitingDialog.dismiss();
+        mCompositionDialog.dismiss();
+    }
+
+    public void dismissPeersAndComposition() {
+        mPeersDialog.dismiss();
+        mCompositionDialog.dismiss();
+    }
+
     private FragmentTransaction preShowDialog(String tag) {
         FragmentTransaction fr = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);

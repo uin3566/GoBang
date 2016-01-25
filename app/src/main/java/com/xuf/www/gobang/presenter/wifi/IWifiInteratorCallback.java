@@ -18,4 +18,8 @@ public interface IWifiInteratorCallback {
     void onFindPeers(List<SalutDevice> deviceList);
 
     void onPeersNotFound();
+
+    void onDataReceived(Object o);
+
+    void onSendMessageFailed();
 }
