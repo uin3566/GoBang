@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
+import com.xuf.www.gobang.bean.Message;
+import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.interator.wifi.WifiInteractor;
 
 import java.util.List;
@@ -32,6 +34,10 @@ public class WifiPresenter implements IWifiInteratorCallback {
         mWifiInterator.startWifiService();
     }
 
+    public void sendMessage(Message message) {
+        mWifiInterator.sendMessage(message);
+    }
+
     public void findPeers() {
         mWifiInterator.findPeers();
     }
@@ -58,6 +64,16 @@ public class WifiPresenter implements IWifiInteratorCallback {
     @Override
     public void onPeersNotFound() {
         mWifiView.onPeersNotFound();
+    }
+
+    @Override
+    public void onDataReceived(Object o) {
+        mWifiView.onDataReceived(o);
+    }
+
+    @Override
+    public void onSendMessageFailed() {
+        mWifiView.onSendMessageFailed();
     }
 
     @Override

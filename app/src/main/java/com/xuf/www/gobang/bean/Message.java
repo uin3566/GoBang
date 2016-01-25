@@ -8,6 +8,16 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject
 public class Message {
+    public static final int MSG_TYPE_HOST_BEGIN = 0;
+    public static final int MSG_TYPE_BEGIN_ACK = 1;
+    public static final int MSG_TYPE_GAME_DATA = 2;
+
     @JsonField
-    public String mMessage;
+    public int mMessageType;
+
+    @JsonField
+    public boolean mIsWhite;
+
+    @JsonField
+    public Point mGameData;
 }
