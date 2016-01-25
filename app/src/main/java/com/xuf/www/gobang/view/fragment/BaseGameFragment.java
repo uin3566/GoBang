@@ -34,8 +34,8 @@ public class BaseGameFragment extends Fragment{
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         BusProvider.getInstance().unregister(this);
     }
 }

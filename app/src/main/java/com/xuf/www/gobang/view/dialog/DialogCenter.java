@@ -1,27 +1,29 @@
 package com.xuf.www.gobang.view.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.peak.salut.SalutDevice;
 import com.squareup.otto.Produce;
+
+import java.util.List;
 
 /**
  * Created by lenov0 on 2015/12/28.
  */
 public class DialogCenter {
-
-    private static DialogCenter mInstance = null;
-
-    private static FragmentManager mFragmentManager;
+    private FragmentManager mFragmentManager;
 
     private CompositionDialog mCompositionDialog;
     private PeersDialog mPeersDialog;
     private WaitingPlayerDialog mWaitingDialog;
 
-    private DialogCenter(FragmentManager manager) {
-        mFragmentManager = manager;
+    public DialogCenter(FragmentActivity activity) {
+        mFragmentManager = activity.getSupportFragmentManager();
         mCompositionDialog = new CompositionDialog();
         mCompositionDialog.setCancelable(false);
         mPeersDialog = new PeersDialog();
@@ -30,22 +32,38 @@ public class DialogCenter {
         mWaitingDialog.setCancelable(false);
     }
 
-    public static DialogCenter getInstance(FragmentManager fragmentManager) {
-        if (mInstance == null) {
-            mFragmentManager = fragmentManager;
-            mInstance = new DialogCenter(mFragmentManager);
-        }
-        return mInstance;
-    }
-
     public void showCompositionDialog() {
         mCompositionDialog.show(preShowDialog(CompositionDialog.TAG), CompositionDialog.TAG);
     }
 
-    private FragmentTransaction preShowDialog(String tag){
+    public void showWaitingPlayerDialog() {
+        mWaitingDialog.show(preShowDialog(WaitingPlayerDialog.TAG), WaitingPlayerDialog.TAG);
+    }
+
+    public void enableWaitingPlayerDialogsBegin() {
+        mWaitingDialog.setBeginEnable();
+    }
+
+    public void dismissWaitingPlayerDialog() {
+        mWaitingDialog.dismiss();
+    }
+
+    public void showPeersDialog() {
+        mPeersDialog.show(preShowDialog(PeersDialog.TAG), PeersDialog.TAG);
+    }
+
+    public void dismissPeersDialog() {
+        mPeersDialog.dismiss();
+    }
+
+    public void updatePeers(List<SalutDevice> data) {
+        mPeersDialog.updatePeers(data);
+    }
+
+    private FragmentTransaction preShowDialog(String tag) {
         FragmentTransaction fr = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-        if (fragment != null){
+        if (fragment != null) {
             fr.remove(fragment);
         }
         fr.addToBackStack(null);
