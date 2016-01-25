@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.squareup.otto.Produce;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.util.EventBus.BusProvider;
-import com.xuf.www.gobang.util.EventBus.WifiCancelEvent;
+import com.xuf.www.gobang.util.EventBus.WifiCancelCompositionEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCreateGameEvent;
 import com.xuf.www.gobang.util.EventBus.WifiJoinGameEvent;
 
@@ -42,29 +41,14 @@ public class CompositionDialog extends BaseDialog implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_create_game:
-                BusProvider.getInstance().post(createGame());
+                BusProvider.getInstance().post(new WifiCreateGameEvent());
                 break;
             case R.id.btn_join_game:
-                BusProvider.getInstance().post(joinGame());
+                BusProvider.getInstance().post(new WifiJoinGameEvent());
                 break;
             case R.id.btn_cancel:
-                BusProvider.getInstance().post(cancel());
+                BusProvider.getInstance().post(new WifiCancelCompositionEvent());
                 break;
         }
-    }
-
-    @Produce
-    public WifiCreateGameEvent createGame() {
-        return new WifiCreateGameEvent();
-    }
-
-    @Produce
-    public WifiJoinGameEvent joinGame() {
-        return new WifiJoinGameEvent();
-    }
-
-    @Produce
-    public WifiCancelEvent cancel() {
-        return new WifiCancelEvent();
     }
 }

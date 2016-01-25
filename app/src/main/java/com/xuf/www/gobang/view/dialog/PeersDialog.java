@@ -2,7 +2,6 @@ package com.xuf.www.gobang.view.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,9 @@ import android.widget.TextView;
 
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.R;
+import com.xuf.www.gobang.util.EventBus.BusProvider;
+import com.xuf.www.gobang.util.EventBus.WifiConnectPeerEvent;
+import com.xuf.www.gobang.util.EventBus.WifiCancelPeerEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,19 +23,13 @@ import java.util.List;
 /**
  * Created by lenov0 on 2015/12/27.
  */
-public class PeersDialog extends DialogFragment {
+public class PeersDialog extends BaseDialog {
 
     public static final String TAG = "PeersDialog";
-
-    private PeerDialogCallback mListener;
 
     private ListView mListView;
     private DeviceAdapter mAdapter;
     private List<SalutDevice> mData = new ArrayList<>();
-
-    public void setListener(PeerDialogCallback listener){
-        mListener = listener;
-    }
 
     @Nullable
     @Override
@@ -49,7 +45,7 @@ public class PeersDialog extends DialogFragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onPeerCancel();
+                BusProvider.getInstance().post(new WifiCancelPeerEvent());
             }
         });
 
@@ -63,9 +59,7 @@ public class PeersDialog extends DialogFragment {
     private class DeviceAdapter extends BaseAdapter{
         public void setData(List<SalutDevice> data){
             mData.clear();
-            for (SalutDevice device : data){
-                mData.add(device);
-            }
+            mData.addAll(data);
             notifyDataSetChanged();
         }
 
@@ -99,7 +93,7 @@ public class PeersDialog extends DialogFragment {
             holder.device.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onPeerConnect(mData.get(position));
+                    BusProvider.getInstance().post(new WifiConnectPeerEvent(mData.get(position)));
                 }
             });
 
@@ -113,10 +107,5 @@ public class PeersDialog extends DialogFragment {
                 device = (TextView)view.findViewById(R.id.tv_device);
             }
         }
-    }
-
-    public interface PeerDialogCallback {
-        void onPeerConnect(SalutDevice device);
-        void onPeerCancel();
     }
 }

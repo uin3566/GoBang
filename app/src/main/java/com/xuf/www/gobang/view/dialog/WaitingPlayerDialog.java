@@ -10,21 +10,17 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.xuf.www.gobang.R;
+import com.xuf.www.gobang.util.EventBus.BusProvider;
+import com.xuf.www.gobang.util.EventBus.WifiBeginWaitingEvent;
+import com.xuf.www.gobang.util.EventBus.WifiCancelWaitingEvent;
 
 /**
  * Created by lenov0 on 2015/12/28.
  */
-public class WaitingPlayerDialog extends DialogFragment {
+public class WaitingPlayerDialog extends BaseDialog {
     public static final String TAG = "WaitingPlayerDialog";
 
     private Button mBeginButton;
-    private Button mCancelButton;
-
-    private WaitingDialogCallback mCallback;
-
-    public void setListener(WaitingDialogCallback callback){
-        mCallback = callback;
-    }
 
     @Nullable
     @Override
@@ -34,13 +30,13 @@ public class WaitingPlayerDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_waiting_player, container, false);
         mBeginButton = (Button)view.findViewById(R.id.btn_begin);
         mBeginButton.setClickable(false);
-        mCancelButton = (Button)view.findViewById(R.id.btn_cancel);
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCallback.onWaitingCancel();
-            }
-        });
+        Button CancelButton = (Button)view.findViewById(R.id.btn_cancel);
+        CancelButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 BusProvider.getInstance().post(new WifiCancelWaitingEvent());
+             }
+         });
 
         return view;
     }
@@ -50,13 +46,8 @@ public class WaitingPlayerDialog extends DialogFragment {
         mBeginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.onWaitingBegin();
+                BusProvider.getInstance().post(new WifiBeginWaitingEvent());
             }
         });
-    }
-
-    public interface WaitingDialogCallback{
-        void onWaitingBegin();
-        void onWaitingCancel();
     }
 }
