@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.xuf.www.gobang.Constants;
 import com.xuf.www.gobang.R;
+import com.xuf.www.gobang.bean.Point;
 
 /**
  * Created by Administrator on 2015/12/8.
@@ -44,8 +45,6 @@ public class GoBangBoard extends View {
     private float mGridWidth;
     private float mGridHeight;
 
-    private boolean mCurrentChessWhite = true;
-
     public GoBangBoard(Context context) {
         super(context);
         init(context);
@@ -61,7 +60,7 @@ public class GoBangBoard extends View {
         init(context);
     }
 
-    private void init(Context context){
+    private void init(Context context) {
         mLinePaint = new Paint();
         mLinePaint.setAntiAlias(true);
         mLinePaint.setColor(Color.BLACK);
@@ -75,11 +74,7 @@ public class GoBangBoard extends View {
         mWhiteChessBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chess_white);
     }
 
-    public void setCurrentChessWhite(boolean currentChessWhite){
-        mCurrentChessWhite = currentChessWhite;
-    }
-
-    private void calcLinePoints(){
+    private void calcLinePoints() {
         mHorizontalLinePoints = new float[mLineCount * 4];
         mVerticalLinePoints = new float[mLineCount * 4];
 
@@ -87,7 +82,7 @@ public class GoBangBoard extends View {
         float boardHeight = getHeight() - BOARD_MARGIN * 2;
 
         mGridWidth = boardWidth / (mLineCount - 1);
-        for (int i = 0; i < mLineCount * 4; i += 4){
+        for (int i = 0; i < mLineCount * 4; i += 4) {
             mVerticalLinePoints[i] = i * mGridWidth / 4 + BOARD_MARGIN;
             mVerticalLinePoints[i + 1] = BOARD_MARGIN;
             mVerticalLinePoints[i + 2] = i * mGridWidth / 4 + BOARD_MARGIN;
@@ -95,7 +90,7 @@ public class GoBangBoard extends View {
         }
 
         mGridHeight = boardHeight / (mLineCount - 1);
-        for (int i = 0; i < mLineCount * 4; i += 4){
+        for (int i = 0; i < mLineCount * 4; i += 4) {
             mHorizontalLinePoints[i] = BOARD_MARGIN;
             mHorizontalLinePoints[i + 1] = i * mGridHeight / 4 + BOARD_MARGIN;
             mHorizontalLinePoints[i + 2] = boardWidth + BOARD_MARGIN;
@@ -103,24 +98,10 @@ public class GoBangBoard extends View {
         }
 
         mBlackPoints = new float[]{3 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
-                                   11 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
-                                   7 * mGridWidth + BOARD_MARGIN, 7 * mGridHeight + BOARD_MARGIN,
-                                   3 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN,
-                                   11 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN};
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                float x = event.getX();
-                float y = event.getY();
-                int i = (int)(Math.rint((x - BOARD_MARGIN) / mGridWidth));
-                int j = (int)(Math.rint((y - BOARD_MARGIN) / mGridHeight));
-                putChess(i, j);
-                break;
-        }
-        return super.onTouchEvent(event);
+                11 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
+                7 * mGridWidth + BOARD_MARGIN, 7 * mGridHeight + BOARD_MARGIN,
+                3 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN,
+                11 * mGridWidth + BOARD_MARGIN, 11 * mGridHeight + BOARD_MARGIN};
     }
 
     @Override
@@ -139,12 +120,20 @@ public class GoBangBoard extends View {
         drawChess(canvas);
     }
 
-    public void putChess(int x, int y){
-        if (mBoard[x][y] != CHESS_NONE){
+    public Point convertPoint(float x, float y){
+        int i = (int) (Math.rint((x - BOARD_MARGIN) / mGridWidth));
+        int j = (int) (Math.rint((y - BOARD_MARGIN) / mGridHeight));
+        Point point = new Point();
+        point.setXY(i, j);
+        return point;
+    }
+
+    public void putChess(boolean isWhite, int x, int y) {
+        if (mBoard[x][y] != CHESS_NONE) {
             return;
         }
 
-        if (mCurrentChessWhite){
+        if (isWhite) {
             mBoard[x][y] = CHESS_WHITE;
         } else {
             mBoard[x][y] = CHESS_BLACK;
@@ -153,24 +142,24 @@ public class GoBangBoard extends View {
         invalidate();
     }
 
-    private void drawLines(Canvas canvas){
+    private void drawLines(Canvas canvas) {
         canvas.drawLines(mHorizontalLinePoints, mLinePaint);
         canvas.drawLines(mVerticalLinePoints, mLinePaint);
     }
 
-    private void drawBlackPoints(Canvas canvas){
+    private void drawBlackPoints(Canvas canvas) {
         canvas.drawPoints(mBlackPoints, mPointPaint);
     }
 
-    private void drawChess(Canvas canvas){
-        for (int row = 0; row < LINE_COUNT; row++){
-            for (int col = 0; col < LINE_COUNT; col++){
+    private void drawChess(Canvas canvas) {
+        for (int row = 0; row < LINE_COUNT; row++) {
+            for (int col = 0; col < LINE_COUNT; col++) {
                 float x = BOARD_MARGIN + col * mGridWidth;
                 float y = BOARD_MARGIN + row * mGridHeight;
                 RectF rectF = new RectF(x - HALF_CHESS_SIZE, y - HALF_CHESS_SIZE, x + HALF_CHESS_SIZE, y + HALF_CHESS_SIZE);
-                if (mBoard[col][row] == CHESS_WHITE){
+                if (mBoard[col][row] == CHESS_WHITE) {
                     canvas.drawBitmap(mWhiteChessBitmap, null, rectF, null);
-                } else if (mBoard[col][row] == CHESS_BLACK){
+                } else if (mBoard[col][row] == CHESS_BLACK) {
                     canvas.drawBitmap(mBlackChessBitmap, null, rectF, null);
                 }
             }

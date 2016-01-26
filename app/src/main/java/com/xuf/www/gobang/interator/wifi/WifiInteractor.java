@@ -34,8 +34,11 @@ public class WifiInteractor implements SalutDataCallback {
     }
 
     public void initWifiNet() {
+        if (!Salut.isWiFiEnabled(mContext)) {
+            Salut.enableWiFi(mContext);
+        }
         SalutDataReceiver mDataReceiver = new SalutDataReceiver((Activity) mContext, this);
-        SalutServiceData mServiceData = new SalutServiceData("server", 50489, "instance");
+        SalutServiceData mServiceData = new SalutServiceData("server", 5432, "xuf");
         mSalut = new Salut(mDataReceiver, mServiceData, new SalutCallback() {
             @Override
             public void call() {
@@ -105,16 +108,25 @@ public class WifiInteractor implements SalutDataCallback {
         });
     }
 
-    public void sendMessage(Message message) {
+    public void sendToDevice(Message message) {
         if (mSendToDevice != null){
             mSalut.sendToDevice(mSendToDevice, message, new SalutCallback() {
                 @Override
                 public void call() {
-                    Log.i(TAG, "sendMessage, send data failed");
+                    Log.i(TAG, "sendToDevice, send data failed");
                     mCallback.onSendMessageFailed();
                 }
             });
         }
+    }
+
+    public void sendToHost(Message message){
+        mSalut.sendToHost(message, new SalutCallback() {
+            @Override
+            public void call() {
+                Log.i(TAG, "sendToHost, send data failed");
+            }
+        });
     }
 
     @Override
