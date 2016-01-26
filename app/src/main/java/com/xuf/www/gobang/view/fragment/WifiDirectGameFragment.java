@@ -2,15 +2,18 @@ package com.xuf.www.gobang.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.peak.salut.SalutDevice;
 import com.squareup.otto.Subscribe;
+import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Message;
+import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.presenter.wifi.IWifiView;
 import com.xuf.www.gobang.presenter.wifi.WifiPresenter;
 import com.xuf.www.gobang.util.EventBus.WifiBeginWaitingEvent;
@@ -23,6 +26,7 @@ import com.xuf.www.gobang.util.EventBus.WifiCancelPeerEvent;
 import com.xuf.www.gobang.util.MessageWrapper;
 import com.xuf.www.gobang.util.ToastUtil;
 import com.xuf.www.gobang.view.dialog.DialogCenter;
+import com.xuf.www.gobang.widget.GoBangBoard;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,11 +34,15 @@ import java.util.List;
 /**
  * Created by Xuf on 2016/1/23.
  */
-public class WifiDirectGameFragment extends BaseGameFragment implements IWifiView {
+public class WifiDirectGameFragment extends BaseGameFragment implements IWifiView, View.OnTouchListener {
 
     private boolean mIsHost;
+    private boolean mIsMePlay = false;
+
     private WifiPresenter mWifiPresenter;
+
     private DialogCenter mDialogCenter;
+    private GoBangBoard mBoard;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +59,11 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        mBoard = (GoBangBoard) view.findViewById(R.id.go_bang_board);
+        mBoard.setOnTouchListener(this);
+
+        return view;
     }
 
     private void init() {
@@ -100,12 +112,20 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
             int type = message.mMessageType;
             switch (type) {
                 case Message.MSG_TYPE_HOST_BEGIN:
+                    //joiner
                     mDialogCenter.dismissPeersAndComposition();
+                    Message ack = MessageWrapper.getHostBeginAckMessage();
+                    mWifiPresenter.sendToHost(ack);
+                    ToastUtil.showShort(getActivity(), "游戏开始");
                     break;
                 case Message.MSG_TYPE_BEGIN_ACK:
+                    //host
                     mDialogCenter.dismissWaitingAndComposition();
+                    mIsMePlay = true;
                     break;
                 case Message.MSG_TYPE_GAME_DATA:
+                    mBoard.putChess(message.mIsWhite, message.mGameData.x, message.mGameData.y);
+                    mIsMePlay = true;
                     break;
             }
         } catch (IOException e) {
@@ -116,6 +136,28 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     @Override
     public void onSendMessageFailed() {
         ToastUtil.showShort(getActivity(), "send message failed");
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (mIsMePlay) {
+                    float x = motionEvent.getX();
+                    float y = motionEvent.getY();
+                    Point point = mBoard.convertPoint(x, y);
+                    mBoard.putChess(mIsHost, point.x, point.y);
+                    Message data = MessageWrapper.getSendDataMessage(point, mIsHost);
+                    if (mIsHost) {
+                        mWifiPresenter.sendToDevice(data);
+                    } else {
+                        mWifiPresenter.sendToHost(data);
+                    }
+                    mIsMePlay = false;
+                }
+                break;
+        }
+        return false;
     }
 
     @Subscribe
@@ -149,8 +191,8 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
 
     @Subscribe
     public void onBeginGame(WifiBeginWaitingEvent event) {
-        Message message = MessageWrapper.getHostBeginMessage(true);
-        mWifiPresenter.sendMessage(message);
+        Message begin = MessageWrapper.getHostBeginMessage();
+        mWifiPresenter.sendToDevice(begin);
     }
 
     @Subscribe

@@ -2,10 +2,8 @@ package com.xuf.www.gobang.presenter.wifi;
 
 import android.content.Context;
 
-import com.peak.salut.Salut;
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.bean.Message;
-import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.interator.wifi.WifiInteractor;
 
 import java.util.List;
@@ -34,8 +32,12 @@ public class WifiPresenter implements IWifiInteratorCallback {
         mWifiInterator.startWifiService();
     }
 
-    public void sendMessage(Message message) {
-        mWifiInterator.sendMessage(message);
+    public void sendToDevice(Message message) {
+        mWifiInterator.sendToDevice(message);
+    }
+
+    public void sendToHost(Message message){
+        mWifiInterator.sendToHost(message);
     }
 
     public void findPeers() {

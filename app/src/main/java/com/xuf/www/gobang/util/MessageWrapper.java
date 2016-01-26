@@ -8,10 +8,9 @@ import com.xuf.www.gobang.bean.Point;
  */
 public class MessageWrapper {
 
-    public static Message getHostBeginMessage(boolean isWhite) {
+    public static Message getHostBeginMessage() {
         Message message = new Message();
         message.mMessageType = Message.MSG_TYPE_HOST_BEGIN;
-        message.mIsWhite = isWhite;
         return message;
     }
 
@@ -21,10 +20,11 @@ public class MessageWrapper {
         return message;
     }
 
-    public static Message getSendDataMessage(Point point) {
+    public static Message getSendDataMessage(Point point, boolean isWhite) {
         Message message = new Message();
         message.mMessageType = Message.MSG_TYPE_GAME_DATA;
         message.mGameData = point;
+        message.mIsWhite = isWhite;
         return message;
     }
 }
