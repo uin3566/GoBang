@@ -29,12 +29,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View root){
-        TextView aiModeTextView = (TextView) root.findViewById(R.id.tv_ai_mode);
         TextView coupeTextView = (TextView) root.findViewById(R.id.tv_coupe_mode);
         TextView wifiTextView = (TextView) root.findViewById(R.id.tv_wifi_mode);
         TextView blueToothTextView = (TextView) root.findViewById(R.id.tv_blue_tooth_mode);
 
-        aiModeTextView.setOnClickListener(this);
         coupeTextView.setOnClickListener(this);
         wifiTextView.setOnClickListener(this);
         blueToothTextView.setOnClickListener(this);
@@ -44,9 +42,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent = new Intent(getActivity(), GameActivity.class);
         switch (v.getId()){
-            case R.id.tv_ai_mode:
-                intent.putExtra(Constants.GAME_MODE, Constants.AI_MODE);
-                break;
             case R.id.tv_coupe_mode:
                 intent.putExtra(Constants.GAME_MODE, Constants.COUPE_MODE);
                 break;
