@@ -45,6 +45,7 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     private boolean mIsHost;
     private boolean mIsMePlay = false;
     private boolean mIsGameEnd = false;
+    private boolean mIsOpponentLeaved = false;
 
     private WifiPresenter mWifiPresenter;
 
@@ -193,6 +194,7 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
                     ToastUtil.showShort(getActivity(), "对方已离开游戏");
                     mIsMePlay = true;
                     mIsGameEnd = true;
+                    mIsOpponentLeaved = true;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,7 +216,11 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
             case R.id.btn_move_back:
                 break;
             case R.id.btn_exit:
-                mDialogCenter.showExitAckDialog();
+                if (mIsOpponentLeaved){
+                    getActivity().finish();
+                } else {
+                    mDialogCenter.showExitAckDialog();
+                }
                 break;
         }
     }
