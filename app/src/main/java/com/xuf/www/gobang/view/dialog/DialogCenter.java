@@ -23,6 +23,7 @@ public class DialogCenter {
     private WaitingPlayerDialog mWaitingDialog;
     private RestartWaitingDialog mRestartWaitingDialog;
     private RestartAckDialog mRestartAckDialog;
+    private ExitAckDialog mExitAckDialog;
 
     public DialogCenter(FragmentActivity activity) {
         mFragmentManager = activity.getSupportFragmentManager();
@@ -36,6 +37,8 @@ public class DialogCenter {
         mRestartWaitingDialog.setCancelable(false);
         mRestartAckDialog = new RestartAckDialog();
         mRestartAckDialog.setCancelable(false);
+        mExitAckDialog = new ExitAckDialog();
+        mExitAckDialog.setCancelable(false);
     }
 
     public void showCompositionDialog() {
@@ -80,6 +83,14 @@ public class DialogCenter {
 
     public void dismissRestartAckDialog() {
         mRestartAckDialog.dismiss();
+    }
+
+    public void showExitAckDialog() {
+        mExitAckDialog.show(preShowDialog(ExitAckDialog.TAG), ExitAckDialog.TAG);
+    }
+
+    public void dismissExitAckDialog() {
+        mExitAckDialog.dismiss();
     }
 
     public void dismissWaitingAndComposition() {

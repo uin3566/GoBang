@@ -47,4 +47,10 @@ public class MessageWrapper {
         message.mAgreeRestart = agreeRestart;
         return message;
     }
+
+    public static Message getGameExitMessage() {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_EXIT;
+        return message;
+    }
 }
