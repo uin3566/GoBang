@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.xuf.www.gobang.Constants;
+import com.xuf.www.gobang.util.Constants;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.view.activity.GameActivity;
 

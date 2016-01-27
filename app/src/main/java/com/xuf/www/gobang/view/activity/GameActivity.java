@@ -2,7 +2,7 @@ package com.xuf.www.gobang.view.activity;
 
 import android.support.v4.app.Fragment;
 
-import com.xuf.www.gobang.Constants;
+import com.xuf.www.gobang.util.Constants;
 import com.xuf.www.gobang.view.fragment.WifiDirectGameFragment;
 
 /**
@@ -17,8 +17,6 @@ public class GameActivity extends BaseActivity {
 
         switch (gameMode){
             case Constants.INVALID_MODE:
-                break;
-            case Constants.AI_MODE:
                 break;
             case Constants.COUPE_MODE:
                 break;

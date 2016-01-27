@@ -8,12 +8,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
-import com.xuf.www.gobang.Constants;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Point;
+import com.xuf.www.gobang.util.Constants;
 
 /**
  * Created by Administrator on 2015/12/8.
@@ -24,9 +24,6 @@ public class GoBangBoard extends View {
     private static final int BOARD_MARGIN = 40;
     private static final int HALF_CHESS_SIZE = 35;
 
-    private static final int CHESS_NONE = 0;
-    private static final int CHESS_WHITE = 1;
-    private static final int CHESS_BLACK = 2;
     private static final int BOARD_SIZE = LINE_COUNT;
 
     private int[][] mBoard = new int[BOARD_SIZE][BOARD_SIZE];
@@ -44,6 +41,8 @@ public class GoBangBoard extends View {
     private int mLineCount;
     private float mGridWidth;
     private float mGridHeight;
+
+    private PutChessListener mPutChessListener;
 
     public GoBangBoard(Context context) {
         super(context);
@@ -72,6 +71,19 @@ public class GoBangBoard extends View {
 
         mBlackChessBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chess_black);
         mWhiteChessBitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.chess_white);
+    }
+
+    public void setPutChessListener(PutChessListener listener) {
+        mPutChessListener = listener;
+    }
+
+    public void clearBoard() {
+        for (int row = 0; row < LINE_COUNT; row++) {
+            for (int col = 0; col < LINE_COUNT; col++) {
+                mBoard[col][row] = Constants.CHESS_NONE;
+            }
+        }
+        invalidate();
     }
 
     private void calcLinePoints() {
@@ -120,7 +132,7 @@ public class GoBangBoard extends View {
         drawChess(canvas);
     }
 
-    public Point convertPoint(float x, float y){
+    public Point convertPoint(float x, float y) {
         int i = (int) (Math.rint((x - BOARD_MARGIN) / mGridWidth));
         int j = (int) (Math.rint((y - BOARD_MARGIN) / mGridHeight));
         Point point = new Point();
@@ -129,16 +141,17 @@ public class GoBangBoard extends View {
     }
 
     public void putChess(boolean isWhite, int x, int y) {
-        if (mBoard[x][y] != CHESS_NONE) {
+        if (mBoard[x][y] != Constants.CHESS_NONE) {
             return;
         }
 
         if (isWhite) {
-            mBoard[x][y] = CHESS_WHITE;
+            mBoard[x][y] = Constants.CHESS_WHITE;
         } else {
-            mBoard[x][y] = CHESS_BLACK;
+            mBoard[x][y] = Constants.CHESS_BLACK;
         }
 
+        mPutChessListener.onPutChess(mBoard, x, y);
         invalidate();
     }
 
@@ -157,12 +170,16 @@ public class GoBangBoard extends View {
                 float x = BOARD_MARGIN + col * mGridWidth;
                 float y = BOARD_MARGIN + row * mGridHeight;
                 RectF rectF = new RectF(x - HALF_CHESS_SIZE, y - HALF_CHESS_SIZE, x + HALF_CHESS_SIZE, y + HALF_CHESS_SIZE);
-                if (mBoard[col][row] == CHESS_WHITE) {
+                if (mBoard[col][row] == Constants.CHESS_WHITE) {
                     canvas.drawBitmap(mWhiteChessBitmap, null, rectF, null);
-                } else if (mBoard[col][row] == CHESS_BLACK) {
+                } else if (mBoard[col][row] == Constants.CHESS_BLACK) {
                     canvas.drawBitmap(mBlackChessBitmap, null, rectF, null);
                 }
             }
         }
+    }
+
+    public interface PutChessListener {
+        void onPutChess(int[][] board, int x, int y);
     }
 }
