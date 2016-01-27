@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Switch;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -16,6 +17,7 @@ import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.presenter.wifi.IWifiView;
 import com.xuf.www.gobang.presenter.wifi.WifiPresenter;
+import com.xuf.www.gobang.util.EventBus.RestartGameAckEvent;
 import com.xuf.www.gobang.util.EventBus.WifiBeginWaitingEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCancelCompositionEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCancelWaitingEvent;
@@ -23,6 +25,7 @@ import com.xuf.www.gobang.util.EventBus.WifiConnectPeerEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCreateGameEvent;
 import com.xuf.www.gobang.util.EventBus.WifiJoinGameEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCancelPeerEvent;
+import com.xuf.www.gobang.util.GameJudger;
 import com.xuf.www.gobang.util.MessageWrapper;
 import com.xuf.www.gobang.util.ToastUtil;
 import com.xuf.www.gobang.view.dialog.DialogCenter;
@@ -34,15 +37,21 @@ import java.util.List;
 /**
  * Created by Xuf on 2016/1/23.
  */
-public class WifiDirectGameFragment extends BaseGameFragment implements IWifiView, View.OnTouchListener {
+public class WifiDirectGameFragment extends BaseGameFragment implements IWifiView, GoBangBoard.PutChessListener
+        , View.OnTouchListener, View.OnClickListener {
 
     private boolean mIsHost;
     private boolean mIsMePlay = false;
+    private boolean mIsGameEnd = false;
 
     private WifiPresenter mWifiPresenter;
 
     private DialogCenter mDialogCenter;
     private GoBangBoard mBoard;
+
+    private Button mRestart;
+    private Button mExitGame;
+    private Button mMoveBack;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,10 +69,24 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        mBoard = (GoBangBoard) view.findViewById(R.id.go_bang_board);
-        mBoard.setOnTouchListener(this);
+        initView(view);
 
         return view;
+    }
+
+    private void initView(View view) {
+        mBoard = (GoBangBoard) view.findViewById(R.id.go_bang_board);
+        mBoard.setOnTouchListener(this);
+        mBoard.setPutChessListener(this);
+
+        mRestart = (Button) view.findViewById(R.id.btn_restart);
+        mRestart.setOnClickListener(this);
+
+        mExitGame = (Button) view.findViewById(R.id.btn_exit);
+        mExitGame.setOnClickListener(this);
+
+        mMoveBack = (Button) view.findViewById(R.id.btn_move_back);
+        mMoveBack.setOnClickListener(this);
     }
 
     private void init() {
@@ -75,6 +98,20 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
 
     private void unInit() {
         mWifiPresenter.unInitWifiNet(mIsHost);
+    }
+
+    private void reset() {
+        mBoard.clearBoard();
+        mIsMePlay = mIsHost;
+        mIsGameEnd = false;
+    }
+
+    private void sendMessage(Message message) {
+        if (mIsHost) {
+            mWifiPresenter.sendToDevice(message);
+        } else {
+            mWifiPresenter.sendToHost(message);
+        }
     }
 
     @Override
@@ -115,7 +152,7 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
                     //joiner
                     mDialogCenter.dismissPeersAndComposition();
                     Message ack = MessageWrapper.getHostBeginAckMessage();
-                    mWifiPresenter.sendToHost(ack);
+                    sendMessage(ack);
                     ToastUtil.showShort(getActivity(), "游戏开始");
                     break;
                 case Message.MSG_TYPE_BEGIN_ACK:
@@ -126,6 +163,29 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
                 case Message.MSG_TYPE_GAME_DATA:
                     mBoard.putChess(message.mIsWhite, message.mGameData.x, message.mGameData.y);
                     mIsMePlay = true;
+                    break;
+                case Message.MSG_TYPE_GAME_END:
+                    ToastUtil.showShortDelay(getActivity(), message.mMessage, 1000);
+                    mIsMePlay = false;
+                    mIsGameEnd = true;
+                    break;
+                case Message.MSG_TYPE_GAME_RESTART_REQ:
+                    if (mIsGameEnd) {
+                        Message resp = MessageWrapper.getGameRestartRespMessage(true);
+                        sendMessage(resp);
+                        reset();
+                    } else {
+                        mDialogCenter.showRestartAckDialog();
+                    }
+                    break;
+                case Message.MSG_TYPE_GAME_RESTART_RESP:
+                    if (message.mAgreeRestart) {
+                        reset();
+                        ToastUtil.showShort(getActivity(), "游戏开始");
+                    } else {
+                        ToastUtil.showShort(getActivity(), "对方不同意重新开始游戏");
+                    }
+                    mDialogCenter.dismissRestartWaitingDialog();
                     break;
             }
         } catch (IOException e) {
@@ -139,6 +199,21 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     }
 
     @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_restart:
+                Message message = MessageWrapper.getGameRestartReqMessage();
+                sendMessage(message);
+                mDialogCenter.showRestartWaitingDialog();
+                break;
+            case R.id.btn_move_back:
+                break;
+            case R.id.btn_exit:
+                break;
+        }
+    }
+
+    @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -146,18 +221,25 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
                     float x = motionEvent.getX();
                     float y = motionEvent.getY();
                     Point point = mBoard.convertPoint(x, y);
-                    mBoard.putChess(mIsHost, point.x, point.y);
                     Message data = MessageWrapper.getSendDataMessage(point, mIsHost);
-                    if (mIsHost) {
-                        mWifiPresenter.sendToDevice(data);
-                    } else {
-                        mWifiPresenter.sendToHost(data);
-                    }
+                    sendMessage(data);
+                    mBoard.putChess(mIsHost, point.x, point.y);
                     mIsMePlay = false;
                 }
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onPutChess(int[][] board, int x, int y) {
+        if (mIsMePlay && GameJudger.isGameEnd(board, x, y)) {
+            ToastUtil.showShort(getActivity(), "你赢了");
+            Message end = MessageWrapper.getGameEndMessage("你输了");
+            sendMessage(end);
+            mIsMePlay = false;
+            mIsGameEnd = true;
+        }
     }
 
     @Subscribe
@@ -192,11 +274,21 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     @Subscribe
     public void onBeginGame(WifiBeginWaitingEvent event) {
         Message begin = MessageWrapper.getHostBeginMessage();
-        mWifiPresenter.sendToDevice(begin);
+        sendMessage(begin);
     }
 
     @Subscribe
     public void onCancelWaitingDialog(WifiCancelWaitingEvent event) {
         mDialogCenter.dismissWaitingPlayerDialog();
+    }
+
+    @Subscribe
+    public void onRestartAck(RestartGameAckEvent event) {
+        Message ack = MessageWrapper.getGameRestartRespMessage(event.mAgreeRestart);
+        sendMessage(ack);
+        if (event.mAgreeRestart) {
+            reset();
+        }
+        mDialogCenter.dismissRestartAckDialog();
     }
 }

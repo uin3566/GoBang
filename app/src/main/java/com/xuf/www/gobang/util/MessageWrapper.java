@@ -27,4 +27,24 @@ public class MessageWrapper {
         message.mIsWhite = isWhite;
         return message;
     }
+
+    public static Message getGameEndMessage(String endMessage) {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_GAME_END;
+        message.mMessage = endMessage;
+        return message;
+    }
+
+    public static Message getGameRestartReqMessage() {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_GAME_RESTART_REQ;
+        return message;
+    }
+
+    public static Message getGameRestartRespMessage(boolean agreeRestart) {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_GAME_RESTART_RESP;
+        message.mAgreeRestart = agreeRestart;
+        return message;
+    }
 }

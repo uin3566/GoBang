@@ -21,6 +21,8 @@ public class DialogCenter {
     private CompositionDialog mCompositionDialog;
     private PeersDialog mPeersDialog;
     private WaitingPlayerDialog mWaitingDialog;
+    private RestartWaitingDialog mRestartWaitingDialog;
+    private RestartAckDialog mRestartAckDialog;
 
     public DialogCenter(FragmentActivity activity) {
         mFragmentManager = activity.getSupportFragmentManager();
@@ -30,6 +32,10 @@ public class DialogCenter {
         mPeersDialog.setCancelable(false);
         mWaitingDialog = new WaitingPlayerDialog();
         mWaitingDialog.setCancelable(false);
+        mRestartWaitingDialog = new RestartWaitingDialog();
+        mRestartWaitingDialog.setCancelable(false);
+        mRestartAckDialog = new RestartAckDialog();
+        mRestartAckDialog.setCancelable(false);
     }
 
     public void showCompositionDialog() {
@@ -58,6 +64,22 @@ public class DialogCenter {
 
     public void updatePeers(List<SalutDevice> data) {
         mPeersDialog.updatePeers(data);
+    }
+
+    public void showRestartWaitingDialog() {
+        mRestartWaitingDialog.show(preShowDialog(RestartWaitingDialog.TAG), RestartWaitingDialog.TAG);
+    }
+
+    public void dismissRestartWaitingDialog() {
+        mRestartWaitingDialog.dismiss();
+    }
+
+    public void showRestartAckDialog() {
+        mRestartAckDialog.show(preShowDialog(RestartAckDialog.TAG), RestartAckDialog.TAG);
+    }
+
+    public void dismissRestartAckDialog() {
+        mRestartAckDialog.dismiss();
     }
 
     public void dismissWaitingAndComposition() {

@@ -1,8 +1,12 @@
 package com.xuf.www.gobang.util;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by lenov0 on 2015/9/21.
@@ -15,6 +19,19 @@ public class ToastUtil {
     }
 
     public static boolean isShow = true;
+
+    /**
+     * 延迟短时间显示Toast
+     */
+    public static void showShortDelay(final Context context, final CharSequence message, long delayMillis) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showShort(context, message);
+            }
+        }, 500);
+    }
 
     /**
      * 短时间显示Toast
