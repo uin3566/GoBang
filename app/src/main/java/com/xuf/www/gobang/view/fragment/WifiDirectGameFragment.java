@@ -17,6 +17,7 @@ import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.presenter.wifi.IWifiView;
 import com.xuf.www.gobang.presenter.wifi.WifiPresenter;
+import com.xuf.www.gobang.util.EventBus.ExitGameAckEvent;
 import com.xuf.www.gobang.util.EventBus.RestartGameAckEvent;
 import com.xuf.www.gobang.util.EventBus.WifiBeginWaitingEvent;
 import com.xuf.www.gobang.util.EventBus.WifiCancelCompositionEvent;
@@ -29,6 +30,7 @@ import com.xuf.www.gobang.util.GameJudger;
 import com.xuf.www.gobang.util.MessageWrapper;
 import com.xuf.www.gobang.util.ToastUtil;
 import com.xuf.www.gobang.view.dialog.DialogCenter;
+import com.xuf.www.gobang.view.dialog.ExitAckDialog;
 import com.xuf.www.gobang.widget.GoBangBoard;
 
 import java.io.IOException;
@@ -187,6 +189,10 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
                     }
                     mDialogCenter.dismissRestartWaitingDialog();
                     break;
+                case Message.MSG_TYPE_EXIT:
+                    ToastUtil.showShort(getActivity(), "对方已离开游戏");
+                    mIsMePlay = true;
+                    mIsGameEnd = true;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -202,13 +208,13 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_restart:
-                Message message = MessageWrapper.getGameRestartReqMessage();
-                sendMessage(message);
+                sendMessage(MessageWrapper.getGameRestartReqMessage());
                 mDialogCenter.showRestartWaitingDialog();
                 break;
             case R.id.btn_move_back:
                 break;
             case R.id.btn_exit:
+                mDialogCenter.showExitAckDialog();
                 break;
         }
     }
@@ -290,5 +296,16 @@ public class WifiDirectGameFragment extends BaseGameFragment implements IWifiVie
             reset();
         }
         mDialogCenter.dismissRestartAckDialog();
+    }
+
+    @Subscribe
+    public void onExitAck(ExitGameAckEvent event) {
+        if (event.mExit) {
+            Message ack = MessageWrapper.getGameExitMessage();
+            sendMessage(ack);
+            getActivity().finish();
+        } else {
+            mDialogCenter.dismissExitAckDialog();
+        }
     }
 }

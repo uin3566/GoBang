@@ -29,4 +29,9 @@ public class GameActivity extends BaseActivity {
 
         return fragment;
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

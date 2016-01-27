@@ -14,6 +14,7 @@ public class Message {
     public static final int MSG_TYPE_GAME_END = 3;
     public static final int MSG_TYPE_GAME_RESTART_REQ = 4;
     public static final int MSG_TYPE_GAME_RESTART_RESP = 5;
+    public static final int MSG_TYPE_EXIT = 6;
 
     @JsonField
     public int mMessageType;
