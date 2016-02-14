@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.xuf.www.gobang.widget.GoBangBoard
+        android:id="@+id/go_bang_board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true" />
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_above="@id/go_bang_board"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/chess_black" />
+
+    <ImageView
+        android:id="@+id/iv_white_chess"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/go_bang_board"
+        android:layout_marginLeft="15dp"
+        android:src="@mipmap/chess_white" />
+
+    <RadioGroup
+        android:id="@+id/rg_first_play_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/go_bang_board"
+        android:layout_marginLeft="25dp"
+        android:layout_toRightOf="@id/iv_white_chess"
+        android:checkedButton="@+id/rb_white_first"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@id/rb_white_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="白子先手"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rb_black_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="黑子先手"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_start_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/go_bang_board"
+        android:layout_marginRight="25dp"
+        android:text="开始游戏" />
+
+    <Button
+        android:id="@+id/btn_exit_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/btn_start_game"
+        android:layout_below="@id/btn_start_game"
+        android:text="退出游戏" />
+
+</RelativeLayout>

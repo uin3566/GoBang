@@ -3,6 +3,7 @@ package com.xuf.www.gobang.view.activity;
 import android.support.v4.app.Fragment;
 
 import com.xuf.www.gobang.util.Constants;
+import com.xuf.www.gobang.view.fragment.CoupleGameFragment;
 import com.xuf.www.gobang.view.fragment.WifiDirectGameFragment;
 
 /**
@@ -19,6 +20,7 @@ public class GameActivity extends BaseActivity {
             case Constants.INVALID_MODE:
                 break;
             case Constants.COUPE_MODE:
+                fragment = new CoupleGameFragment();
                 break;
             case Constants.WIFI_MODE:
                 fragment = new WifiDirectGameFragment();
