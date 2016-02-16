@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 import com.xuf.www.gobang.util.Constants;
 import com.xuf.www.gobang.view.fragment.CoupleGameFragment;
-import com.xuf.www.gobang.view.fragment.WifiDirectGameFragment;
+import com.xuf.www.gobang.view.fragment.NetGameFragment;
 
 /**
  * Created by Administrator on 2015/12/8.
@@ -23,7 +23,7 @@ public class GameActivity extends BaseActivity {
                 fragment = new CoupleGameFragment();
                 break;
             case Constants.WIFI_MODE:
-                fragment = new WifiDirectGameFragment();
+                fragment = new NetGameFragment();
                 break;
             case Constants.BLUE_TOOTH_MODE:
                 break;
