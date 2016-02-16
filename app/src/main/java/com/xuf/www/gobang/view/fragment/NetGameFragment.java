@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Created by Xuf on 2016/1/23.
  */
-public class WifiDirectGameFragment extends BaseGameFragment implements IWifiView, GoBangBoard.PutChessListener
+public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBangBoard.PutChessListener
         , View.OnTouchListener, View.OnClickListener {
 
     private boolean mIsHost;
