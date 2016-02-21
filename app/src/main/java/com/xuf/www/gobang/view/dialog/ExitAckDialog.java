@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.EventBus.BusProvider;
-import com.xuf.www.gobang.EventBus.ExitGameAckEvent;
-import com.xuf.www.gobang.EventBus.RestartGameAckEvent;
+import com.xuf.www.gobang.eventbus.BusProvider;
+import com.xuf.www.gobang.eventbus.ExitGameAckEvent;
 
 /**
  * Created by Administrator on 2016/1/27.

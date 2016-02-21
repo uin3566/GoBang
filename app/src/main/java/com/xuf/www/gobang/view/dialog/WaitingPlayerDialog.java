@@ -9,9 +9,9 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.EventBus.BusProvider;
-import com.xuf.www.gobang.EventBus.WifiBeginWaitingEvent;
-import com.xuf.www.gobang.EventBus.WifiCancelWaitingEvent;
+import com.xuf.www.gobang.eventbus.BusProvider;
+import com.xuf.www.gobang.eventbus.WifiBeginWaitingEvent;
+import com.xuf.www.gobang.eventbus.WifiCancelWaitingEvent;
 
 /**
  * Created by lenov0 on 2015/12/28.
