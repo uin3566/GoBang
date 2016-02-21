@@ -1,5 +1,6 @@
 package com.xuf.www.gobang.view.dialog;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,9 +14,9 @@ import android.widget.TextView;
 
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.util.EventBus.BusProvider;
-import com.xuf.www.gobang.util.EventBus.WifiConnectPeerEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCancelPeerEvent;
+import com.xuf.www.gobang.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.ConnectPeerEvent;
+import com.xuf.www.gobang.EventBus.WifiCancelPeerEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class PeersDialog extends BaseDialog {
 
     private ListView mListView;
     private DeviceAdapter mAdapter;
-    private List<SalutDevice> mData = new ArrayList<>();
+    private List<SalutDevice> mSalutDevices = new ArrayList<>();
+    private List<BluetoothDevice> mBlueToothDevices = new ArrayList<>();
 
     @Nullable
     @Override
@@ -53,24 +55,38 @@ public class PeersDialog extends BaseDialog {
     }
 
     public void updatePeers(List<SalutDevice> data){
-        mAdapter.setData(data);
+        mAdapter.setSalutDevices(data);
+    }
+
+    public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices){
+        mAdapter.setBlueToothDevices(bluetoothDevices);
     }
 
     private class DeviceAdapter extends BaseAdapter{
-        public void setData(List<SalutDevice> data){
-            mData.clear();
-            mData.addAll(data);
+        private boolean mIsSalutDevice;
+
+        public void setSalutDevices(List<SalutDevice> data){
+            mSalutDevices.clear();
+            mSalutDevices.addAll(data);
+            mIsSalutDevice = true;
+            notifyDataSetChanged();
+        }
+
+        public void setBlueToothDevices(List<BluetoothDevice> blueToothDevices){
+            mBlueToothDevices.clear();
+            mBlueToothDevices.addAll(blueToothDevices);
+            mIsSalutDevice = false;
             notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return mData.size();
+            return mIsSalutDevice ? mSalutDevices.size() : mBlueToothDevices.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mData.get(position);
+            return mIsSalutDevice ? mSalutDevices.get(position) : mBlueToothDevices.get(position);
         }
 
         @Override
@@ -87,13 +103,17 @@ public class PeersDialog extends BaseDialog {
                 convertView.setTag(holder);
             }
 
-            String device = mData.get(position).deviceName;
+            String device = mIsSalutDevice ? mSalutDevices.get(position).deviceName : mBlueToothDevices.get(position).getName();
             holder = (ViewHolder)convertView.getTag();
             holder.device.setText(device);
             holder.device.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    BusProvider.getInstance().post(new WifiConnectPeerEvent(mData.get(position)));
+                    if (mIsSalutDevice){
+                        BusProvider.getInstance().post(new ConnectPeerEvent(mSalutDevices.get(position), null));
+                    } else {
+                        BusProvider.getInstance().post(new ConnectPeerEvent(null, mBlueToothDevices.get(position)));
+                    }
                 }
             });
 

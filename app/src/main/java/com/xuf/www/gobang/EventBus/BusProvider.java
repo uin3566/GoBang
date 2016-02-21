@@ -1,4 +1,4 @@
-package com.xuf.www.gobang.util.EventBus;
+package com.xuf.www.gobang.EventBus;
 
 import com.squareup.otto.Bus;
 
