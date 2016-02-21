@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.util.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.BusProvider;
 
 /**
  * Created by Xuf on 2016/1/23.

@@ -118,8 +118,9 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
                 float x = event.getX();
                 float y = event.getY();
                 Point point = mGoBangBoard.convertPoint(x, y);
-                mGoBangBoard.putChess(mCurrentWhite, point.x, point.y);
-                mCurrentWhite = !mCurrentWhite;
+                if (mGoBangBoard.putChess(mCurrentWhite, point.x, point.y)) {
+                    mCurrentWhite = !mCurrentWhite;
+                }
                 break;
         }
         return false;

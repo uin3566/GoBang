@@ -1,5 +1,6 @@
 package com.xuf.www.gobang.view.fragment;
 
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -7,7 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Switch;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.peak.salut.SalutDevice;
@@ -15,22 +15,21 @@ import com.squareup.otto.Subscribe;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.bean.Point;
-import com.xuf.www.gobang.presenter.wifi.IWifiView;
-import com.xuf.www.gobang.presenter.wifi.WifiPresenter;
-import com.xuf.www.gobang.util.EventBus.ExitGameAckEvent;
-import com.xuf.www.gobang.util.EventBus.RestartGameAckEvent;
-import com.xuf.www.gobang.util.EventBus.WifiBeginWaitingEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCancelCompositionEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCancelWaitingEvent;
-import com.xuf.www.gobang.util.EventBus.WifiConnectPeerEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCreateGameEvent;
-import com.xuf.www.gobang.util.EventBus.WifiJoinGameEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCancelPeerEvent;
+import com.xuf.www.gobang.presenter.INetView;
+import com.xuf.www.gobang.presenter.NetPresenter;
+import com.xuf.www.gobang.EventBus.ConnectPeerEvent;
+import com.xuf.www.gobang.EventBus.ExitGameAckEvent;
+import com.xuf.www.gobang.EventBus.RestartGameAckEvent;
+import com.xuf.www.gobang.EventBus.WifiBeginWaitingEvent;
+import com.xuf.www.gobang.EventBus.WifiCancelCompositionEvent;
+import com.xuf.www.gobang.EventBus.WifiCancelWaitingEvent;
+import com.xuf.www.gobang.EventBus.WifiCreateGameEvent;
+import com.xuf.www.gobang.EventBus.WifiJoinGameEvent;
+import com.xuf.www.gobang.EventBus.WifiCancelPeerEvent;
 import com.xuf.www.gobang.util.GameJudger;
 import com.xuf.www.gobang.util.MessageWrapper;
 import com.xuf.www.gobang.util.ToastUtil;
 import com.xuf.www.gobang.view.dialog.DialogCenter;
-import com.xuf.www.gobang.view.dialog.ExitAckDialog;
 import com.xuf.www.gobang.widget.GoBangBoard;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ import java.util.List;
 /**
  * Created by Xuf on 2016/1/23.
  */
-public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBangBoard.PutChessListener
+public class NetGameFragment extends BaseGameFragment implements INetView, GoBangBoard.PutChessListener
         , View.OnTouchListener, View.OnClickListener {
 
     private boolean mIsHost;
@@ -47,7 +46,7 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     private boolean mIsGameEnd = false;
     private boolean mIsOpponentLeaved = false;
 
-    private WifiPresenter mWifiPresenter;
+    private NetPresenter mNetPresenter;
 
     private DialogCenter mDialogCenter;
     private GoBangBoard mBoard;
@@ -55,6 +54,16 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     private Button mRestart;
     private Button mExitGame;
     private Button mMoveBack;
+
+    private static final String NET_MODE = "netMode";
+
+    public static NetGameFragment newInstance(int netMode) {
+        NetGameFragment netGameFragment = new NetGameFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(NET_MODE, netMode);
+        netGameFragment.setArguments(bundle);
+        return netGameFragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,12 +104,14 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     private void init() {
         mDialogCenter = new DialogCenter(getActivity());
         mDialogCenter.showCompositionDialog();
-        mWifiPresenter = new WifiPresenter(getActivity(), this);
-        mWifiPresenter.initWifiNet();
+        Bundle bundle = getArguments();
+        int gameMode = bundle.getInt(NET_MODE);
+        mNetPresenter = new NetPresenter(getActivity(), this, gameMode);
+        mNetPresenter.init();
     }
 
     private void unInit() {
-        mWifiPresenter.unInitWifiNet(mIsHost);
+        mNetPresenter.unInit(mIsHost);
     }
 
     private void reset() {
@@ -110,11 +121,25 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     }
 
     private void sendMessage(Message message) {
+        mNetPresenter.sendToDevice(message, mIsHost);
+    }
+
+    @Override
+    public void onFindBlueToothPeers(List<BluetoothDevice> deviceList) {
+        mDialogCenter.updateBlueToothPeers(deviceList);
+    }
+
+    @Override
+    public void onBlueToothDeviceConnected() {
+        ToastUtil.showShort(getActivity(), "蓝牙连接成功");
         if (mIsHost) {
-            mWifiPresenter.sendToDevice(message);
-        } else {
-            mWifiPresenter.sendToHost(message);
+            mDialogCenter.enableWaitingPlayerDialogsBegin();
         }
+    }
+
+    @Override
+    public void onBlueToothDeviceConnectFailed() {
+        ToastUtil.showShort(getActivity(), "蓝牙连接失败");
     }
 
     @Override
@@ -124,8 +149,8 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     }
 
     @Override
-    public void onDeviceConnected(SalutDevice device) {
-        ToastUtil.showShort(getActivity(), "onDeviceConnected");
+    public void onWifiDeviceConnected(SalutDevice device) {
+        ToastUtil.showShort(getActivity(), "onWifiDeviceConnected");
         mDialogCenter.enableWaitingPlayerDialogsBegin();
     }
 
@@ -135,7 +160,7 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     }
 
     @Override
-    public void onFindPeers(List<SalutDevice> deviceList) {
+    public void onFindWifiPeers(List<SalutDevice> deviceList) {
         mDialogCenter.updatePeers(deviceList);
     }
 
@@ -216,7 +241,7 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
             case R.id.btn_move_back:
                 break;
             case R.id.btn_exit:
-                if (mIsOpponentLeaved){
+                if (mIsOpponentLeaved) {
                     getActivity().finish();
                 } else {
                     mDialogCenter.showExitAckDialog();
@@ -233,10 +258,11 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
                     float x = motionEvent.getX();
                     float y = motionEvent.getY();
                     Point point = mBoard.convertPoint(x, y);
-                    Message data = MessageWrapper.getSendDataMessage(point, mIsHost);
-                    sendMessage(data);
-                    mBoard.putChess(mIsHost, point.x, point.y);
-                    mIsMePlay = false;
+                    if (mBoard.putChess(mIsHost, point.x, point.y)) {
+                        Message data = MessageWrapper.getSendDataMessage(point, mIsHost);
+                        sendMessage(data);
+                        mIsMePlay = false;
+                    }
                 }
                 break;
         }
@@ -257,14 +283,14 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     @Subscribe
     public void onCreateGame(WifiCreateGameEvent event) {
         mIsHost = true;
-        mWifiPresenter.startWifiService();
+        mNetPresenter.startService();
         mDialogCenter.showWaitingPlayerDialog();
     }
 
     @Subscribe
     public void onJoinGame(WifiJoinGameEvent event) {
         mIsHost = false;
-        mWifiPresenter.findPeers();
+        mNetPresenter.findPeers();
         mDialogCenter.showPeersDialog();
     }
 
@@ -274,8 +300,8 @@ public class NetGameFragment extends BaseGameFragment implements IWifiView, GoBa
     }
 
     @Subscribe
-    public void onConnectPeer(WifiConnectPeerEvent event) {
-        mWifiPresenter.connectToHost(event.mDevice);
+    public void onConnectPeer(ConnectPeerEvent event) {
+        mNetPresenter.connectToHost(event.mSalutDevice, event.mBlueToothDevice);
     }
 
     @Subscribe

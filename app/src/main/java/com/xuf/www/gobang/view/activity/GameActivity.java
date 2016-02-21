@@ -23,9 +23,8 @@ public class GameActivity extends BaseActivity {
                 fragment = new CoupleGameFragment();
                 break;
             case Constants.WIFI_MODE:
-                fragment = new NetGameFragment();
-                break;
             case Constants.BLUE_TOOTH_MODE:
+                fragment = NetGameFragment.newInstance(gameMode);
                 break;
         }
 

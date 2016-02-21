@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.util.EventBus.BusProvider;
-import com.xuf.www.gobang.util.EventBus.WifiCancelCompositionEvent;
-import com.xuf.www.gobang.util.EventBus.WifiCreateGameEvent;
-import com.xuf.www.gobang.util.EventBus.WifiJoinGameEvent;
+import com.xuf.www.gobang.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.WifiCancelCompositionEvent;
+import com.xuf.www.gobang.EventBus.WifiCreateGameEvent;
+import com.xuf.www.gobang.EventBus.WifiJoinGameEvent;
 
 /**
  * Created by lenov0 on 2015/12/26.

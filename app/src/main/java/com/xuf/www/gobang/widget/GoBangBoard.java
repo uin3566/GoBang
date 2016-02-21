@@ -140,9 +140,9 @@ public class GoBangBoard extends View {
         return point;
     }
 
-    public void putChess(boolean isWhite, int x, int y) {
+    public boolean putChess(boolean isWhite, int x, int y) {
         if (mBoard[x][y] != Constants.CHESS_NONE) {
-            return;
+            return false;
         }
 
         if (isWhite) {
@@ -153,6 +153,7 @@ public class GoBangBoard extends View {
 
         mPutChessListener.onPutChess(mBoard, x, y);
         invalidate();
+        return true;
     }
 
     private void drawLines(Canvas canvas) {

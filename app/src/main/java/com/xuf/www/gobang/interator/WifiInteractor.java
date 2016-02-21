@@ -1,6 +1,7 @@
-package com.xuf.www.gobang.interator.wifi;
+package com.xuf.www.gobang.interator;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.util.Log;
 
@@ -12,15 +13,15 @@ import com.peak.salut.SalutDataReceiver;
 import com.peak.salut.SalutDevice;
 import com.peak.salut.SalutServiceData;
 import com.xuf.www.gobang.bean.Message;
-import com.xuf.www.gobang.presenter.wifi.IWifiInteratorCallback;
+import com.xuf.www.gobang.presenter.INetInteratorCallback;
 
 /**
  * Created by Xuf on 2016/1/23.
  */
-public class WifiInteractor implements SalutDataCallback {
+public class WifiInteractor extends NetInteractor implements SalutDataCallback {
     private static final String TAG = "WifiInteractor";
 
-    private IWifiInteratorCallback mCallback;
+    private INetInteratorCallback mCallback;
 
     private Context mContext;
 
@@ -28,12 +29,12 @@ public class WifiInteractor implements SalutDataCallback {
 
     private SalutDevice mSendToDevice;
 
-    public WifiInteractor(Context context, IWifiInteratorCallback callback) {
+    public WifiInteractor(Context context, INetInteratorCallback callback) {
         mCallback = callback;
         mContext = context;
     }
 
-    public void initWifiNet() {
+    public boolean init() {
         if (!Salut.isWiFiEnabled(mContext)) {
             Salut.enableWiFi(mContext);
         }
@@ -45,9 +46,11 @@ public class WifiInteractor implements SalutDataCallback {
                 mCallback.onMobileNotSupportDevice();
             }
         });
+
+        return true;
     }
 
-    public void unInitWifiNet(boolean isHost) {
+    public void unInit(boolean isHost) {
         if (isHost) {
             mSalut.stopNetworkService(false);
         } else {
@@ -55,13 +58,13 @@ public class WifiInteractor implements SalutDataCallback {
         }
     }
 
-    public void startWifiService() {
+    public void startNetService() {
         mSalut.startNetworkService(new SalutDeviceCallback() {
             @Override
             public void call(SalutDevice salutDevice) {
-                Log.i(TAG, "startNetworkService, onDeviceConnected, device:" + salutDevice.deviceName);
+                Log.i(TAG, "startNetworkService, onWifiDeviceConnected, device:" + salutDevice.deviceName);
                 mSendToDevice = salutDevice;
-                mCallback.onDeviceConnected(salutDevice);
+                mCallback.onWifiDeviceConnected(salutDevice);
             }
         }, new SalutCallback() {
             @Override
@@ -82,7 +85,7 @@ public class WifiInteractor implements SalutDataCallback {
             @Override
             public void call() {
                 Log.i(TAG, "discoverWithTimeout, onDeviceFound" + mSalut.foundDevices.toString());
-                mCallback.onFindPeers(mSalut.foundDevices);
+                mCallback.onFindWifiPeers(mSalut.foundDevices);
             }
         }, new SalutCallback() {
             @Override
@@ -93,9 +96,9 @@ public class WifiInteractor implements SalutDataCallback {
         }, 6000);
     }
 
-    public void connectToHost(SalutDevice host) {
-        mSendToDevice = host;
-        mSalut.registerWithHost(host, new SalutCallback() {
+    public void connectToHost(SalutDevice salutHost, BluetoothDevice blueToothHost) {
+        mSendToDevice = salutHost;
+        mSalut.registerWithHost(salutHost, new SalutCallback() {
             @Override
             public void call() {
                 Log.i(TAG, "registerWithHost, registered success");
@@ -108,25 +111,25 @@ public class WifiInteractor implements SalutDataCallback {
         });
     }
 
-    public void sendToDevice(Message message) {
-        if (mSendToDevice != null){
-            mSalut.sendToDevice(mSendToDevice, message, new SalutCallback() {
+    public void sendToDevice(Message message, boolean isHost) {
+        if (isHost) {
+            if (mSendToDevice != null) {
+                mSalut.sendToDevice(mSendToDevice, message, new SalutCallback() {
+                    @Override
+                    public void call() {
+                        Log.i(TAG, "sendToDevice, send data failed");
+                        mCallback.onSendMessageFailed();
+                    }
+                });
+            }
+        } else {
+            mSalut.sendToHost(message, new SalutCallback() {
                 @Override
                 public void call() {
-                    Log.i(TAG, "sendToDevice, send data failed");
-                    mCallback.onSendMessageFailed();
+                    Log.i(TAG, "sendToHost, send data failed");
                 }
             });
         }
-    }
-
-    public void sendToHost(Message message){
-        mSalut.sendToHost(message, new SalutCallback() {
-            @Override
-            public void call() {
-                Log.i(TAG, "sendToHost, send data failed");
-            }
-        });
     }
 
     @Override
