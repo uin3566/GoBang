@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.util.Constants;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.view.activity.GameActivity;
@@ -29,9 +30,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View root){
-        TextView coupeTextView = (TextView) root.findViewById(R.id.tv_coupe_mode);
-        TextView wifiTextView = (TextView) root.findViewById(R.id.tv_wifi_mode);
-        TextView blueToothTextView = (TextView) root.findViewById(R.id.tv_blue_tooth_mode);
+        ButtonRectangle coupeTextView = (ButtonRectangle) root.findViewById(R.id.tv_coupe_mode);
+        ButtonRectangle wifiTextView = (ButtonRectangle) root.findViewById(R.id.tv_wifi_mode);
+        ButtonRectangle blueToothTextView = (ButtonRectangle) root.findViewById(R.id.tv_blue_tooth_mode);
 
         coupeTextView.setOnClickListener(this);
         wifiTextView.setOnClickListener(this);
