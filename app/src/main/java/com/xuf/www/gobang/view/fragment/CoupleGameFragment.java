@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.bean.Point;
@@ -22,17 +23,16 @@ import com.xuf.www.gobang.widget.GoBangBoard;
  * Created by Xuf on 2016/2/7.
  */
 public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChessListener
-        , RadioGroup.OnCheckedChangeListener
         , View.OnClickListener
         , View.OnTouchListener {
 
     private boolean mIsGameStarted = false;
-    private boolean mIsWhiteFirst;
+    private boolean mIsWhiteFirst = true;
     private boolean mCurrentWhite;
 
-    private RadioGroup mRadioGroup;
     private GoBangBoard mGoBangBoard;
-    private Button mStartGame;
+    private ButtonRectangle mStartGame;
+    private ButtonRectangle mStartFirst;
 
     @Nullable
     @Override
@@ -49,23 +49,16 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
         mGoBangBoard.setOnTouchListener(this);
         mGoBangBoard.setPutChessListener(this);
 
-        mRadioGroup = (RadioGroup) view.findViewById(R.id.rg_first_play_select);
-        mRadioGroup.setOnCheckedChangeListener(this);
-        int id = mRadioGroup.getCheckedRadioButtonId();
-        mIsWhiteFirst = id == R.id.rb_white_first;
         mCurrentWhite = mIsWhiteFirst;
 
-        mStartGame = (Button) view.findViewById(R.id.btn_start_game);
+        mStartGame = (ButtonRectangle) view.findViewById(R.id.btn_start_game);
         mStartGame.setOnClickListener(this);
 
-        Button exitGame = (Button) view.findViewById(R.id.btn_exit_game);
-        exitGame.setOnClickListener(this);
-    }
+        mStartFirst = (ButtonRectangle) view.findViewById(R.id.btn_start_first);
+        mStartFirst.setOnClickListener(this);
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        mIsWhiteFirst = checkedId == R.id.rb_white_first;
-        mCurrentWhite = mIsWhiteFirst;
+        ButtonRectangle exitGame = (ButtonRectangle) view.findViewById(R.id.btn_exit_game);
+        exitGame.setOnClickListener(this);
     }
 
     @Override
@@ -76,6 +69,17 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
                     mIsGameStarted = true;
                     setWidgets();
                 }
+                break;
+            case R.id.btn_start_first:
+                mIsWhiteFirst = !mIsWhiteFirst;
+                mCurrentWhite = mIsWhiteFirst;
+                String buttonText;
+                if (mCurrentWhite){
+                    buttonText = "白子先手";
+                } else {
+                    buttonText = "黑子先手";
+                }
+                //mStartFirst.setText(buttonText);
                 break;
             case R.id.btn_exit_game:
                 getActivity().finish();
@@ -96,16 +100,12 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
     private void setWidgets() {
         mGoBangBoard.clearBoard();
         mStartGame.setEnabled(false);
-        for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
-            mRadioGroup.getChildAt(i).setEnabled(false);
-        }
+        mStartFirst.setEnabled(false);
     }
 
     private void resetWidgets() {
         mStartGame.setEnabled(true);
-        for (int i = 0; i < mRadioGroup.getChildCount(); i++) {
-            mRadioGroup.getChildAt(i).setEnabled(true);
-        }
+        mStartFirst.setEnabled(true);
     }
 
     @Override
