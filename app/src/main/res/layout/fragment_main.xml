@@ -5,34 +5,25 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/tv_coupe_mode"
         android:text="双人模式"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:layout_margin="5dp"
+        android:background="#1E88E5"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="55dp"/>
 
-    <TextView
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/tv_wifi_mode"
         android:text="WIFI对战"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:layout_margin="5dp"
+        android:background="#1E88E5"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="55dp"/>
 
-    <TextView
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/tv_blue_tooth_mode"
         android:text="蓝牙对战"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:padding="5dp"
-        android:layout_margin="5dp"
+        android:background="#1E88E5"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="55dp"/>
 
 </LinearLayout>
