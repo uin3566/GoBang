@@ -147,19 +147,19 @@ public class ButtonRectangle extends Button {
 		}
 	}
 
-//    public void setText(String text) {
-//        textButton.setText(text);
-//    }
-//
-//    public void setTextColor(int color) {
-//        textButton.setTextColor(color);
-//    }
-//
-//    public TextView getTextView() {
-//        return textButton;
-//    }
-//
-//    public String getText() {
-//        return textButton.getText().toString();
-//    }
+    public void setText(String text) {
+        textButton.setText(text);
+    }
+
+    public void setTextColor(int color) {
+        textButton.setTextColor(color);
+    }
+
+    public TextView getTextView() {
+        return textButton;
+    }
+
+    public String getText() {
+        return textButton.getText().toString();
+    }
 }
