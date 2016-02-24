@@ -79,7 +79,7 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
                 } else {
                     buttonText = "黑子先手";
                 }
-                //mStartFirst.setText(buttonText);
+                mStartFirst.setText(buttonText);
                 break;
             case R.id.btn_exit_game:
                 getActivity().finish();
