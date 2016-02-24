@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.eventbus.BusProvider;
 import com.xuf.www.gobang.eventbus.WifiBeginWaitingEvent;
@@ -19,7 +20,7 @@ import com.xuf.www.gobang.eventbus.WifiCancelWaitingEvent;
 public class WaitingPlayerDialog extends BaseDialog {
     public static final String TAG = "WaitingPlayerDialog";
 
-    private Button mBeginButton;
+    private ButtonRectangle mBeginButton;
 
     @Nullable
     @Override
@@ -27,9 +28,9 @@ public class WaitingPlayerDialog extends BaseDialog {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         View view = inflater.inflate(R.layout.dialog_waiting_player, container, false);
-        mBeginButton = (Button)view.findViewById(R.id.btn_begin);
-        mBeginButton.setClickable(false);
-        Button CancelButton = (Button)view.findViewById(R.id.btn_cancel);
+        mBeginButton = (ButtonRectangle)view.findViewById(R.id.btn_begin);
+        mBeginButton.setEnabled(false);
+        ButtonRectangle CancelButton = (ButtonRectangle)view.findViewById(R.id.btn_cancel);
         CancelButton.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
@@ -41,7 +42,7 @@ public class WaitingPlayerDialog extends BaseDialog {
     }
 
     public void setBeginEnable(){
-        mBeginButton.setClickable(true);
+        mBeginButton.setEnabled(true);
         mBeginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

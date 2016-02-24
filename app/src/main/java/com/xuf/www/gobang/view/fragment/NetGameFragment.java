@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.peak.salut.SalutDevice;
 import com.squareup.otto.Subscribe;
 import com.xuf.www.gobang.R;
@@ -51,10 +52,6 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     private DialogCenter mDialogCenter;
     private GoBangBoard mBoard;
 
-    private Button mRestart;
-    private Button mExitGame;
-    private Button mMoveBack;
-
     private static final String NET_MODE = "netMode";
 
     public static NetGameFragment newInstance(int netMode) {
@@ -91,14 +88,14 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
         mBoard.setOnTouchListener(this);
         mBoard.setPutChessListener(this);
 
-        mRestart = (Button) view.findViewById(R.id.btn_restart);
-        mRestart.setOnClickListener(this);
+        ButtonRectangle restart = (ButtonRectangle) view.findViewById(R.id.btn_restart);
+        restart.setOnClickListener(this);
 
-        mExitGame = (Button) view.findViewById(R.id.btn_exit);
-        mExitGame.setOnClickListener(this);
+        ButtonRectangle exitGame = (ButtonRectangle) view.findViewById(R.id.btn_exit);
+        exitGame.setOnClickListener(this);
 
-        mMoveBack = (Button) view.findViewById(R.id.btn_move_back);
-        mMoveBack.setOnClickListener(this);
+        ButtonRectangle moveBack = (ButtonRectangle) view.findViewById(R.id.btn_move_back);
+        moveBack.setOnClickListener(this);
     }
 
     private void init() {

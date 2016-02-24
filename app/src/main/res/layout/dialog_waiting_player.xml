@@ -5,8 +5,8 @@
               android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="250dp"
-        android:layout_height="150dp">
+        android:layout_width="220dp"
+        android:layout_height="180dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -16,7 +16,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:text="创建棋局"
-            android:textSize="20dp"/>
+            android:textSize="18dp"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -25,7 +25,8 @@
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:padding="10dp"
-            android:text="对方现在可以加入游戏"/>
+            android:textSize="15sp"
+            android:text="等待对方连接游戏..."/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,20 +34,22 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal">
 
-            <Button
+            <com.gc.materialdesign.views.ButtonRectangle
                 android:id="@+id/btn_begin"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                android:background="#1E88E5"
                 android:text="开始"/>
 
-            <Button
+            <com.gc.materialdesign.views.ButtonRectangle
                 android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="100dp"
+                android:layout_height="55dp"
+                android:background="#1E88E5"
                 android:text="取消"/>
 
         </LinearLayout>

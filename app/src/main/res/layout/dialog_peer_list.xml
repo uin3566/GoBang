@@ -13,6 +13,7 @@
             android:text="加入棋局"
             android:gravity="center"
             android:padding="10dp"
+            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -20,14 +21,16 @@
             android:id="@+id/lv_peers"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
-        <Button
+        <com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/btn_cancel"
             android:text="取消"
+            android:background="#1E88E5"
             android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:layout_marginBottom="10dp"/>
 
     </LinearLayout>
 

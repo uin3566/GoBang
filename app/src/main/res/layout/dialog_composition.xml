@@ -4,27 +4,30 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:padding="20dp">
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
-    <Button
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/btn_create_game"
+        android:background="#1E88E5"
         android:text="创建游戏"
-        android:gravity="center"
         android:layout_width="100dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="55dp" />
 
-    <Button
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/btn_join_game"
         android:text="加入游戏"
-        android:gravity="center"
+        android:background="#1E88E5"
         android:layout_width="100dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="55dp" />
 
-    <Button
+    <com.gc.materialdesign.views.ButtonRectangle
         android:id="@+id/btn_cancel"
         android:text="取   消"
-        android:gravity="center"
+        android:background="#1E88E5"
         android:layout_width="100dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="55dp" />
 
 </LinearLayout>
