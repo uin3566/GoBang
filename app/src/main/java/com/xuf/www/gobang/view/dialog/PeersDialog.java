@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.eventbus.BusProvider;
@@ -43,7 +44,7 @@ public class PeersDialog extends BaseDialog {
         mAdapter = new DeviceAdapter();
         mListView.setAdapter(mAdapter);
 
-        Button cancel = (Button)view.findViewById(R.id.btn_cancel);
+        ButtonRectangle cancel = (ButtonRectangle)view.findViewById(R.id.btn_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

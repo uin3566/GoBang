@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.eventbus.BusProvider;
 import com.xuf.www.gobang.eventbus.RestartGameAckEvent;
@@ -24,7 +25,7 @@ public class RestartAckDialog extends BaseDialog {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_ack_restart, container, false);
 
-        Button agree = (Button) view.findViewById(R.id.btn_agree);
+        ButtonRectangle agree = (ButtonRectangle) view.findViewById(R.id.btn_agree);
         agree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -32,7 +33,7 @@ public class RestartAckDialog extends BaseDialog {
             }
         });
 
-        Button disagree = (Button) view.findViewById(R.id.btn_disagree);
+        ButtonRectangle disagree = (ButtonRectangle) view.findViewById(R.id.btn_disagree);
         disagree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

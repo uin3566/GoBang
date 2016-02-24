@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.eventbus.BusProvider;
 import com.xuf.www.gobang.eventbus.ExitGameAckEvent;
@@ -23,7 +24,7 @@ public class ExitAckDialog extends BaseDialog{
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_ack_exit, container, false);
 
-        Button exit = (Button) view.findViewById(R.id.btn_exit);
+        ButtonRectangle exit = (ButtonRectangle) view.findViewById(R.id.btn_exit);
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,7 +32,7 @@ public class ExitAckDialog extends BaseDialog{
             }
         });
 
-        Button cancel = (Button) view.findViewById(R.id.btn_cancel);
+        ButtonRectangle cancel = (ButtonRectangle) view.findViewById(R.id.btn_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

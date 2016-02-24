@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <com.xuf.www.gobang.widget.GoBangBoard
-        android:id="@+id/go_bang_board"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/board_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        card_view:cardElevation="5dp">
+
+        <com.xuf.www.gobang.widget.GoBangBoard
+            android:id="@+id/go_bang_board"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.CardView>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
+        <com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/btn_exit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:text="结束游戏"/>
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="#1E88E5"
+            android:layout_margin="7dp"
+            android:text="结束游戏" />
 
-        <Button
+        <com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/btn_move_back"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:text="悔  棋"/>
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="#1E88E5"
+            android:layout_margin="7dp"
+            android:text="悔  棋" />
 
-        <Button
+        <com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/btn_restart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
-            android:layout_weight="1"
-            android:text="重新开始"/>
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="#1E88E5"
+            android:layout_margin="7dp"
+            android:text="重新开始" />
 
     </LinearLayout>
 
