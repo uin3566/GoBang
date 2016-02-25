@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ButtonRectangle;
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.EventBus.BusProvider;
@@ -29,6 +30,8 @@ public class PeersDialog extends BaseDialog {
     public static final String TAG = "PeersDialog";
 
     private ListView mListView;
+    private ProgressBarCircularIndeterminate mProgressBar;
+
     private DeviceAdapter mAdapter;
     private List<SalutDevice> mSalutDevices = new ArrayList<>();
     private List<BluetoothDevice> mBlueToothDevices = new ArrayList<>();
@@ -43,11 +46,15 @@ public class PeersDialog extends BaseDialog {
         mAdapter = new DeviceAdapter();
         mListView.setAdapter(mAdapter);
 
+        mProgressBar = (ProgressBarCircularIndeterminate)view.findViewById(R.id.progressBarCircular);
+
         ButtonRectangle cancel = (ButtonRectangle)view.findViewById(R.id.btn_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 BusProvider.getInstance().post(new WifiCancelPeerEvent());
+                mSalutDevices.clear();
+                mBlueToothDevices.clear();
             }
         });
 
@@ -60,6 +67,7 @@ public class PeersDialog extends BaseDialog {
 
     public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices){
         mAdapter.setBlueToothDevices(bluetoothDevices);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     private class DeviceAdapter extends BaseAdapter{
