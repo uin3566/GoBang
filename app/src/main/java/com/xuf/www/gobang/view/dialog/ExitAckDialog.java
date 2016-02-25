@@ -5,12 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.eventbus.BusProvider;
-import com.xuf.www.gobang.eventbus.ExitGameAckEvent;
+import com.xuf.www.gobang.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.ExitGameAckEvent;
 
 /**
  * Created by Administrator on 2016/1/27.

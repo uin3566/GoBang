@@ -8,16 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.eventbus.BusProvider;
-import com.xuf.www.gobang.eventbus.ConnectPeerEvent;
-import com.xuf.www.gobang.eventbus.WifiCancelPeerEvent;
+import com.xuf.www.gobang.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.ConnectPeerEvent;
+import com.xuf.www.gobang.EventBus.WifiCancelPeerEvent;
 
 import java.util.ArrayList;
 import java.util.List;

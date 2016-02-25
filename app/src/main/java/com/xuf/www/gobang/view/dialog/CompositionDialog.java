@@ -5,14 +5,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.xuf.www.gobang.R;
-import com.xuf.www.gobang.eventbus.BusProvider;
-import com.xuf.www.gobang.eventbus.WifiCancelCompositionEvent;
-import com.xuf.www.gobang.eventbus.WifiCreateGameEvent;
-import com.xuf.www.gobang.eventbus.WifiJoinGameEvent;
+import com.xuf.www.gobang.EventBus.BusProvider;
+import com.xuf.www.gobang.EventBus.WifiCancelCompositionEvent;
+import com.xuf.www.gobang.EventBus.WifiCreateGameEvent;
+import com.xuf.www.gobang.EventBus.WifiJoinGameEvent;
 
 /**
  * Created by lenov0 on 2015/12/26.
