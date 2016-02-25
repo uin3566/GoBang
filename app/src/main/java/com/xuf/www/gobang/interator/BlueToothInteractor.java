@@ -70,7 +70,9 @@ public class BlueToothInteractor extends NetInteractor {
         mBlueToothWrapper.discoveryDevices(new BlueToothWrapper.DeviceDiscoveryListener() {
             @Override
             public void onDeviceFounded(BluetoothDevice device) {
-                pairedDevices.add(device);
+                if (!pairedDevices.contains(device)){
+                    pairedDevices.add(device);
+                }
             }
 
             @Override
