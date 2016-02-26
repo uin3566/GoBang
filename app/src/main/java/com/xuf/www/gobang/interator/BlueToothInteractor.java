@@ -37,7 +37,7 @@ public class BlueToothInteractor extends NetInteractor {
         return success;
     }
 
-    public void unInit(boolean isHost) {
+    public void unInit() {
         mBlueToothWrapper.unInit();
     }
 
@@ -45,7 +45,7 @@ public class BlueToothInteractor extends NetInteractor {
         mDeviceConnectListener = new BlueToothWrapper.DeviceConnectListener() {
             @Override
             public void onConnectResult(boolean success) {
-                if (success){
+                if (success) {
                     mCallback.onBlueToothDeviceConnected();
                 } else {
                     mCallback.onBlueToothDeviceConnectFailed();
@@ -65,12 +65,16 @@ public class BlueToothInteractor extends NetInteractor {
         mBlueToothWrapper.setDiscoverable();
     }
 
+    public void stopNetService() {
+        mBlueToothWrapper.stopBlueToothService();
+    }
+
     public void findPeers() {
         final List<BluetoothDevice> pairedDevices = mBlueToothWrapper.getPairedDevices();
         mBlueToothWrapper.discoveryDevices(new BlueToothWrapper.DeviceDiscoveryListener() {
             @Override
             public void onDeviceFounded(BluetoothDevice device) {
-                if (!pairedDevices.contains(device)){
+                if (!pairedDevices.contains(device)) {
                     pairedDevices.add(device);
                 }
             }

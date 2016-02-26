@@ -50,8 +50,8 @@ public class WifiInteractor extends NetInteractor implements SalutDataCallback {
         return true;
     }
 
-    public void unInit(boolean isHost) {
-        if (isHost) {
+    public void unInit() {
+        if (mSalut.isRunningAsHost) {
             mSalut.stopNetworkService(false);
         } else {
             mSalut.unregisterClient(false);
@@ -78,6 +78,14 @@ public class WifiInteractor extends NetInteractor implements SalutDataCallback {
                 mCallback.onStartWifiServiceFailed();
             }
         });
+    }
+
+    public void stopNetService(){
+        if (mSalut.isRunningAsHost){
+            mSalut.stopNetworkService(false);
+        } else {
+            mSalut.unregisterClient(false);
+        }
     }
 
     public void findPeers() {

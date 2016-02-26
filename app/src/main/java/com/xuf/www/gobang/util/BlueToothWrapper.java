@@ -143,6 +143,7 @@ public class BlueToothWrapper {
             mConnectThread.cancel();
             mConnectThread = null;
         }
+
         if (mDataTransferThread != null) {
             mDataTransferThread.cancel();
             mDataTransferThread = null;
@@ -151,6 +152,18 @@ public class BlueToothWrapper {
         if (mAcceptThread == null) {
             mAcceptThread = new AcceptThread();
             mAcceptThread.start();
+        }
+    }
+
+    public void stopBlueToothService() {
+        if (mDataTransferThread != null) {
+            mDataTransferThread.cancel();
+            mDataTransferThread = null;
+        }
+
+        if (mAcceptThread != null) {
+            mAcceptThread.cancel();
+            mAcceptThread = null;
         }
     }
 

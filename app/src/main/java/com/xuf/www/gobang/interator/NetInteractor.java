@@ -15,11 +15,15 @@ public class NetInteractor {
         return true;
     }
 
-    public void unInit(boolean isHost) {
+    public void unInit() {
 
     }
 
     public void startNetService() {
+
+    }
+
+    public void stopNetService() {
 
     }
 
