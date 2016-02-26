@@ -33,6 +33,7 @@ import com.xuf.www.gobang.view.dialog.DialogCenter;
 import com.xuf.www.gobang.widget.GoBangBoard;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +108,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     }
 
     private void unInit() {
-        mNetPresenter.unInit(mIsHost);
+        mNetPresenter.unInit();
     }
 
     private void reset() {
@@ -163,6 +164,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     @Override
     public void onPeersNotFound() {
         ToastUtil.showShort(getActivity(), "found no peers");
+        mDialogCenter.updatePeers(new ArrayList<SalutDevice>());
     }
 
     @Override
@@ -314,6 +316,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     @Subscribe
     public void onCancelWaitingDialog(WifiCancelWaitingEvent event) {
         mDialogCenter.dismissWaitingPlayerDialog();
+        mNetPresenter.stopService();
     }
 
     @Subscribe

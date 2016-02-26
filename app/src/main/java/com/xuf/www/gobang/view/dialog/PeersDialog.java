@@ -63,6 +63,7 @@ public class PeersDialog extends BaseDialog {
 
     public void updatePeers(List<SalutDevice> data){
         mAdapter.setSalutDevices(data);
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices){
