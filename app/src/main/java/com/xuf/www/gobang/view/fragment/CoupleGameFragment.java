@@ -67,6 +67,7 @@ public class CoupleGameFragment extends Fragment implements GoBangBoard.PutChess
             case R.id.btn_start_game:
                 if (!mIsGameStarted) {
                     mIsGameStarted = true;
+                    mCurrentWhite = mIsWhiteFirst;
                     setWidgets();
                 }
                 break;
