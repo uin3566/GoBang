@@ -165,13 +165,13 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Override
     public void onFindWifiPeers(List<SalutDevice> deviceList) {
-        mDialogCenter.updatePeers(deviceList);
+        mDialogCenter.updateWifiPeers(deviceList);
     }
 
     @Override
     public void onPeersNotFound() {
         ToastUtil.showShort(getActivity(), "found no peers");
-        mDialogCenter.updatePeers(new ArrayList<SalutDevice>());
+        mDialogCenter.updateWifiPeers(new ArrayList<SalutDevice>());
     }
 
     @Override

@@ -1,15 +1,12 @@
 package com.xuf.www.gobang.view.dialog;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.peak.salut.SalutDevice;
-import com.squareup.otto.Produce;
 
 import java.util.List;
 
@@ -66,8 +63,8 @@ public class DialogCenter {
         mPeersDialog.dismiss();
     }
 
-    public void updatePeers(List<SalutDevice> data) {
-        mPeersDialog.updatePeers(data);
+    public void updateWifiPeers(List<SalutDevice> data) {
+        mPeersDialog.updateWifiPeers(data);
     }
 
     public void updateBlueToothPeers(List<BluetoothDevice> data, boolean append){

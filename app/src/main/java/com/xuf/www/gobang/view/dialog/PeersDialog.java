@@ -61,7 +61,7 @@ public class PeersDialog extends BaseDialog {
         return view;
     }
 
-    public void updatePeers(List<SalutDevice> data) {
+    public void updateWifiPeers(List<SalutDevice> data) {
         mAdapter.setSalutDevices(data);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
@@ -127,6 +127,7 @@ public class PeersDialog extends BaseDialog {
                     } else {
                         BusProvider.getInstance().post(new ConnectPeerEvent(null, mBlueToothDevices.get(position)));
                     }
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }
             });
 
