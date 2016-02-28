@@ -46,6 +46,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     private boolean mIsMePlay = false;
     private boolean mIsGameEnd = false;
     private boolean mIsOpponentLeaved = false;
+    private boolean mCanClickConnect = true;
 
     private NetPresenter mNetPresenter;
 
@@ -137,6 +138,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     @Override
     public void onBlueToothDeviceConnectFailed() {
         ToastUtil.showShort(getActivity(), "蓝牙连接失败");
+        mCanClickConnect = true;
     }
 
     @Override
@@ -180,6 +182,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
                     Message ack = MessageWrapper.getHostBeginAckMessage();
                     sendMessage(ack);
                     ToastUtil.showShort(getActivity(), "游戏开始");
+                    mCanClickConnect = true;
                     break;
                 case Message.MSG_TYPE_BEGIN_ACK:
                     //host
@@ -269,7 +272,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Override
     public void onPutChess(int[][] board, int x, int y) {
-        if (mIsMePlay && GameJudger.isGameEnd(board, x, y)) {
+        if (!mIsGameEnd && mIsMePlay && GameJudger.isGameEnd(board, x, y)) {
             ToastUtil.showShort(getActivity(), "你赢了");
             Message end = MessageWrapper.getGameEndMessage("你输了");
             sendMessage(end);
@@ -299,7 +302,10 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Subscribe
     public void onConnectPeer(ConnectPeerEvent event) {
-        mNetPresenter.connectToHost(event.mSalutDevice, event.mBlueToothDevice);
+        if (mCanClickConnect){
+            mNetPresenter.connectToHost(event.mSalutDevice, event.mBlueToothDevice);
+            mCanClickConnect = false;
+        }
     }
 
     @Subscribe
@@ -311,6 +317,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     public void onBeginGame(WifiBeginWaitingEvent event) {
         Message begin = MessageWrapper.getHostBeginMessage();
         sendMessage(begin);
+
     }
 
     @Subscribe
