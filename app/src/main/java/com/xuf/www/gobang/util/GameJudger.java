@@ -31,7 +31,7 @@ public class GameJudger {
         switch (direct) {
             case VERTICAL:
                 //上
-                while (tmpY > 0 && board[tmpX][tmpY] == board[x][y]) {
+                while (tmpY >= 0 && board[tmpX][tmpY] == board[x][y]) {
                     linkCount++;
                     tmpY--;
                     if (linkCount == 5) {
@@ -50,7 +50,7 @@ public class GameJudger {
                 break;
             case HORIZONTAL:
                 //左
-                while (tmpX > 0 && board[tmpX][tmpY] == board[x][y]) {
+                while (tmpX >= 0 && board[tmpX][tmpY] == board[x][y]) {
                     linkCount++;
                     tmpX--;
                     if (linkCount == 5) {
@@ -69,7 +69,7 @@ public class GameJudger {
                 break;
             case LEFT_TILT:
                 //左上
-                while (tmpX > 0 && tmpY > 0 && board[tmpX][tmpY] == board[x][y]) {
+                while (tmpX >= 0 && tmpY >= 0 && board[tmpX][tmpY] == board[x][y]) {
                     linkCount++;
                     tmpX--;
                     tmpY--;
@@ -91,7 +91,7 @@ public class GameJudger {
                 break;
             case RIGHT_TILT:
                 //右上
-                while (tmpX < board.length - 1 && tmpY > 0 && board[tmpX][tmpY] == board[x][y]) {
+                while (tmpX < board.length && tmpY >= 0 && board[tmpX][tmpY] == board[x][y]) {
                     linkCount++;
                     tmpX++;
                     tmpY--;
