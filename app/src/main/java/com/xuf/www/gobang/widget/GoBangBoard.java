@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Point;
 import com.xuf.www.gobang.util.Constants;
+import com.xuf.www.gobang.util.DimenUtil;
 
 /**
  * Created by Administrator on 2015/12/8.
@@ -25,19 +26,29 @@ public class GoBangBoard extends View {
     private static final int HALF_CHESS_SIZE = 35;
 
     private static final int BOARD_SIZE = LINE_COUNT;
+    private static final float BOARD_LINE_WIDTH_DP = 0.7f;//棋盘线宽度
+    private static final float BOARD_FRAME_WIDTH_DP = 1;//棋盘框的线宽度
+    private static final float BOARD_POINT_RADIUS_DP = 2;//棋盘五个圆点的半径宽度
 
     private int[][] mBoard = new int[BOARD_SIZE][BOARD_SIZE];
+    private int mLastPutX;
+    private int mLastPutY;
+
+    private Context mContext;
 
     private Bitmap mWhiteChessBitmap;
     private Bitmap mBlackChessBitmap;
 
-    private Paint mLinePaint;
-    private Paint mPointPaint;
+    private Canvas mCanvas;
+    private Paint mPointPaint;//画圆点
+    private Paint mLinePaint;//画线
 
-    private float[] mVerticalLinePoints;
-    private float[] mHorizontalLinePoints;
-    private float[] mBlackPoints;
+    private float[] mBoardFramePoints;//棋盘边框
+    private float[] mVerticalLinePoints;//棋盘竖线
+    private float[] mHorizontalLinePoints;//棋盘横线
+    private float[] mBlackPoints;//棋盘黑点
 
+    private boolean mShouldDrawRedFlag = false;
     private int mLineCount;
     private float mGridWidth;
     private float mGridHeight;
@@ -60,12 +71,14 @@ public class GoBangBoard extends View {
     }
 
     private void init(Context context) {
+        mContext = context;
+
         mLinePaint = new Paint();
         mLinePaint.setAntiAlias(true);
         mLinePaint.setColor(Color.BLACK);
 
         mPointPaint = new Paint();
-        mPointPaint.setStrokeWidth(10);
+        mPointPaint.setAntiAlias(true);
 
         mLineCount = LINE_COUNT;
 
@@ -83,6 +96,7 @@ public class GoBangBoard extends View {
                 mBoard[col][row] = Constants.CHESS_NONE;
             }
         }
+        mShouldDrawRedFlag = false;
         invalidate();
     }
 
@@ -109,6 +123,12 @@ public class GoBangBoard extends View {
             mHorizontalLinePoints[i + 3] = i * mGridHeight / 4 + BOARD_MARGIN;
         }
 
+        float frameMargin = BOARD_MARGIN * 0.8f;
+        mBoardFramePoints = new float[]{frameMargin, frameMargin, getWidth() - frameMargin, frameMargin,//上横
+                frameMargin, getHeight() - frameMargin, getWidth() - frameMargin, getHeight() - frameMargin,//下横
+                frameMargin, frameMargin, frameMargin, getHeight() - frameMargin,//左竖
+                getWidth() - frameMargin, frameMargin, getWidth() - frameMargin, getHeight() - frameMargin};//右竖
+
         mBlackPoints = new float[]{3 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
                 11 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
                 7 * mGridWidth + BOARD_MARGIN, 7 * mGridHeight + BOARD_MARGIN,
@@ -126,10 +146,12 @@ public class GoBangBoard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        mCanvas = canvas;
         calcLinePoints();
         drawLines(canvas);
         drawBlackPoints(canvas);
         drawChess(canvas);
+        drawRedFlag(mLastPutX, mLastPutY);
     }
 
     public Point convertPoint(float x, float y) {
@@ -150,19 +172,37 @@ public class GoBangBoard extends View {
         } else {
             mBoard[x][y] = Constants.CHESS_BLACK;
         }
+        mLastPutX = x;
+        mLastPutY = y;
+        mShouldDrawRedFlag = true;
 
         mPutChessListener.onPutChess(mBoard, x, y);
         invalidate();
         return true;
     }
 
+    private void drawRedFlag(int x, int y) {
+        if (mShouldDrawRedFlag){
+            float coordinateX = BOARD_MARGIN + x * mGridWidth;
+            float coordinateY = BOARD_MARGIN + y * mGridHeight;
+            mPointPaint.setColor(Color.RED);
+            mCanvas.drawCircle(coordinateX, coordinateY, DimenUtil.dp2px(mContext, BOARD_POINT_RADIUS_DP), mPointPaint);
+        }
+    }
+
     private void drawLines(Canvas canvas) {
+        mLinePaint.setStrokeWidth(DimenUtil.dp2px(mContext, BOARD_LINE_WIDTH_DP));
         canvas.drawLines(mHorizontalLinePoints, mLinePaint);
         canvas.drawLines(mVerticalLinePoints, mLinePaint);
+        mLinePaint.setStrokeWidth(DimenUtil.dp2px(mContext, BOARD_FRAME_WIDTH_DP));
+        canvas.drawLines(mBoardFramePoints, mLinePaint);
     }
 
     private void drawBlackPoints(Canvas canvas) {
-        canvas.drawPoints(mBlackPoints, mPointPaint);
+        mPointPaint.setColor(Color.BLACK);
+        for (int i = 0; i < mBlackPoints.length; i += 2) {
+            canvas.drawCircle(mBlackPoints[i], mBlackPoints[i + 1], DimenUtil.dp2px(mContext, BOARD_POINT_RADIUS_DP), mPointPaint);
+        }
     }
 
     private void drawChess(Canvas canvas) {
