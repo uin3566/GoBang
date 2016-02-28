@@ -2,12 +2,14 @@ package com.xuf.www.gobang.interator;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Handler;
 
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.presenter.INetInteratorCallback;
 import com.xuf.www.gobang.util.BlueToothWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,17 +73,28 @@ public class BlueToothInteractor extends NetInteractor {
 
     public void findPeers() {
         final List<BluetoothDevice> pairedDevices = mBlueToothWrapper.getPairedDevices();
+        if (!pairedDevices.isEmpty()) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCallback.onGetPairedToothPeers(pairedDevices);
+                }
+            }, 1000);
+        }
+
+        final List<BluetoothDevice> discoveryDevices = new ArrayList<>();
         mBlueToothWrapper.discoveryDevices(new BlueToothWrapper.DeviceDiscoveryListener() {
             @Override
             public void onDeviceFounded(BluetoothDevice device) {
                 if (!pairedDevices.contains(device)) {
-                    pairedDevices.add(device);
+                    discoveryDevices.add(device);
                 }
             }
 
             @Override
             public void onDiscoveryFinished() {
-                mCallback.onFindBlueToothPeers(pairedDevices);
+                mCallback.onFindBlueToothPeers(discoveryDevices);
             }
         });
     }

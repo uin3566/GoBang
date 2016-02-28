@@ -23,6 +23,8 @@ public interface INetInteratorCallback {
 
     void onFindWifiPeers(List<SalutDevice> deviceList);
 
+    void onGetPairedToothPeers(List<BluetoothDevice> deviceList);
+
     void onFindBlueToothPeers(List<BluetoothDevice> deviceList);
 
     void onPeersNotFound();

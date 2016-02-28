@@ -70,8 +70,8 @@ public class DialogCenter {
         mPeersDialog.updatePeers(data);
     }
 
-    public void updateBlueToothPeers(List<BluetoothDevice> data){
-        mPeersDialog.updateBlueToothPeers(data);
+    public void updateBlueToothPeers(List<BluetoothDevice> data, boolean append){
+        mPeersDialog.updateBlueToothPeers(data, append);
     }
 
     public void showRestartWaitingDialog() {

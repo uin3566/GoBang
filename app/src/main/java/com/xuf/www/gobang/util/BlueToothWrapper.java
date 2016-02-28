@@ -139,6 +139,9 @@ public class BlueToothWrapper {
     }
 
     private void startBlueToothService() {
+        if (mAdapter.isDiscovering()) {
+            mAdapter.cancelDiscovery();
+        }
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -168,6 +171,9 @@ public class BlueToothWrapper {
     }
 
     public void connectToDevice(BluetoothDevice device) {
+        if (mAdapter.isDiscovering()) {
+            mAdapter.cancelDiscovery();
+        }
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;

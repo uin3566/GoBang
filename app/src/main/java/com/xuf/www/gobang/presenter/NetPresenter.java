@@ -89,6 +89,11 @@ public class NetPresenter implements INetInteratorCallback {
     }
 
     @Override
+    public void onGetPairedToothPeers(List<BluetoothDevice> deviceList) {
+        mNetView.onGetPairedToothPeers(deviceList);
+    }
+
+    @Override
     public void onFindBlueToothPeers(List<BluetoothDevice> deviceList) {
         mNetView.onFindBlueToothPeers(deviceList);
     }

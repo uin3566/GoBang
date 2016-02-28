@@ -42,13 +42,13 @@ public class PeersDialog extends BaseDialog {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.dialog_peer_list, container, false);
 
-        mListView = (ListView)view.findViewById(R.id.lv_peers);
+        mListView = (ListView) view.findViewById(R.id.lv_peers);
         mAdapter = new DeviceAdapter();
         mListView.setAdapter(mAdapter);
 
-        mProgressBar = (ProgressBarCircularIndeterminate)view.findViewById(R.id.progressBarCircular);
+        mProgressBar = (ProgressBarCircularIndeterminate) view.findViewById(R.id.progressBarCircular);
 
-        ButtonRectangle cancel = (ButtonRectangle)view.findViewById(R.id.btn_cancel);
+        ButtonRectangle cancel = (ButtonRectangle) view.findViewById(R.id.btn_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,28 +61,32 @@ public class PeersDialog extends BaseDialog {
         return view;
     }
 
-    public void updatePeers(List<SalutDevice> data){
+    public void updatePeers(List<SalutDevice> data) {
         mAdapter.setSalutDevices(data);
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
-    public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices){
-        mAdapter.setBlueToothDevices(bluetoothDevices);
-        mProgressBar.setVisibility(View.INVISIBLE);
+    public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices, boolean append) {
+        mAdapter.setBlueToothDevices(bluetoothDevices, append);
+        if (append){
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
-    private class DeviceAdapter extends BaseAdapter{
+    private class DeviceAdapter extends BaseAdapter {
         private boolean mIsSalutDevice;
 
-        public void setSalutDevices(List<SalutDevice> data){
+        public void setSalutDevices(List<SalutDevice> data) {
             mSalutDevices.clear();
             mSalutDevices.addAll(data);
             mIsSalutDevice = true;
             notifyDataSetChanged();
         }
 
-        public void setBlueToothDevices(List<BluetoothDevice> blueToothDevices){
-            mBlueToothDevices.clear();
+        public void setBlueToothDevices(List<BluetoothDevice> blueToothDevices, boolean append) {
+            if (!append) {
+                mBlueToothDevices.clear();
+            }
             mBlueToothDevices.addAll(blueToothDevices);
             mIsSalutDevice = false;
             notifyDataSetChanged();
@@ -106,19 +110,19 @@ public class PeersDialog extends BaseDialog {
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
-            if (convertView == null){
+            if (convertView == null) {
                 convertView = LayoutInflater.from(getActivity()).inflate(R.layout.item_device, parent, false);
                 holder = new ViewHolder(convertView);
                 convertView.setTag(holder);
             }
 
             String device = mIsSalutDevice ? mSalutDevices.get(position).deviceName : mBlueToothDevices.get(position).getName();
-            holder = (ViewHolder)convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
             holder.device.setText(device);
             holder.device.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mIsSalutDevice){
+                    if (mIsSalutDevice) {
                         BusProvider.getInstance().post(new ConnectPeerEvent(mSalutDevices.get(position), null));
                     } else {
                         BusProvider.getInstance().post(new ConnectPeerEvent(null, mBlueToothDevices.get(position)));
@@ -129,11 +133,11 @@ public class PeersDialog extends BaseDialog {
             return convertView;
         }
 
-        private class ViewHolder{
+        private class ViewHolder {
             public TextView device;
 
-            public ViewHolder(View view){
-                device = (TextView)view.findViewById(R.id.tv_device);
+            public ViewHolder(View view) {
+                device = (TextView) view.findViewById(R.id.tv_device);
             }
         }
     }

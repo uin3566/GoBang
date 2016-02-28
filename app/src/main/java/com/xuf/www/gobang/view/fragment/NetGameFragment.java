@@ -123,8 +123,13 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     }
 
     @Override
+    public void onGetPairedToothPeers(List<BluetoothDevice> deviceList) {
+        mDialogCenter.updateBlueToothPeers(deviceList, false);
+    }
+
+    @Override
     public void onFindBlueToothPeers(List<BluetoothDevice> deviceList) {
-        mDialogCenter.updateBlueToothPeers(deviceList);
+        mDialogCenter.updateBlueToothPeers(deviceList, true);
     }
 
     @Override
@@ -255,7 +260,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (mIsMePlay) {
+                if (!mIsGameEnd && mIsMePlay) {
                     float x = motionEvent.getX();
                     float y = motionEvent.getY();
                     Point point = mBoard.convertPoint(x, y);
@@ -272,7 +277,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Override
     public void onPutChess(int[][] board, int x, int y) {
-        if (!mIsGameEnd && mIsMePlay && GameJudger.isGameEnd(board, x, y)) {
+        if (mIsMePlay && GameJudger.isGameEnd(board, x, y)) {
             ToastUtil.showShort(getActivity(), "你赢了");
             Message end = MessageWrapper.getGameEndMessage("你输了");
             sendMessage(end);
@@ -284,15 +289,15 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     @Subscribe
     public void onCreateGame(WifiCreateGameEvent event) {
         mIsHost = true;
-        mNetPresenter.startService();
         mDialogCenter.showWaitingPlayerDialog();
+        mNetPresenter.startService();
     }
 
     @Subscribe
     public void onJoinGame(WifiJoinGameEvent event) {
         mIsHost = false;
-        mNetPresenter.findPeers();
         mDialogCenter.showPeersDialog();
+        mNetPresenter.findPeers();
     }
 
     @Subscribe
