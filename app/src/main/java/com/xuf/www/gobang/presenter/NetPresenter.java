@@ -2,12 +2,14 @@ package com.xuf.www.gobang.presenter;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.net.wifi.p2p.WifiP2pDevice;
 
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.interator.NetInteractor;
 import com.xuf.www.gobang.interator.BlueToothInteractor;
 import com.xuf.www.gobang.interator.WifiInteractor;
+import com.xuf.www.gobang.interator.WifiInteractor2;
 import com.xuf.www.gobang.util.Constants;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class NetPresenter implements INetInteratorCallback {
         mNetView = netView;
         mGameMode = gameMode;
         if (isWifiMode()) {
-            mNetInteractor = new WifiInteractor(context, this);
+            mNetInteractor = new WifiInteractor2(context, this);
         } else {
             mNetInteractor = new BlueToothInteractor(context, this);
         }
@@ -59,8 +61,8 @@ public class NetPresenter implements INetInteratorCallback {
         mNetInteractor.findPeers();
     }
 
-    public void connectToHost(SalutDevice salutHost, BluetoothDevice blueToothHost) {
-        mNetInteractor.connectToHost(salutHost, blueToothHost);
+    public void connectToHost(WifiP2pDevice device, SalutDevice salutHost, BluetoothDevice blueToothHost) {
+        mNetInteractor.connectToHost(device, salutHost, blueToothHost);
     }
 
     @Override
@@ -86,6 +88,11 @@ public class NetPresenter implements INetInteratorCallback {
     @Override
     public void onFindWifiPeers(List<SalutDevice> deviceList) {
         mNetView.onFindWifiPeers(deviceList);
+    }
+
+    @Override
+    public void onFindP2pPeers(List<WifiP2pDevice> deviceList) {
+        mNetView.onFindP2pPeers(deviceList);
     }
 
     @Override

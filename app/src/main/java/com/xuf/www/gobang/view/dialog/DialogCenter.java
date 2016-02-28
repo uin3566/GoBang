@@ -3,6 +3,7 @@ package com.xuf.www.gobang.view.dialog;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -68,6 +69,10 @@ public class DialogCenter {
 
     public void updatePeers(List<SalutDevice> data) {
         mPeersDialog.updatePeers(data);
+    }
+
+    public void updateP2pPeers(List<WifiP2pDevice> data){
+        mPeersDialog.updateP2pPeers(data);
     }
 
     public void updateBlueToothPeers(List<BluetoothDevice> data){

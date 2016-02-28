@@ -1,6 +1,7 @@
 package com.xuf.www.gobang.view.dialog;
 
 import android.bluetooth.BluetoothDevice;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ public class PeersDialog extends BaseDialog {
 
     private DeviceAdapter mAdapter;
     private List<SalutDevice> mSalutDevices = new ArrayList<>();
+    private List<WifiP2pDevice> mWifiP2pDevices = new ArrayList<>();
     private List<BluetoothDevice> mBlueToothDevices = new ArrayList<>();
 
     @Nullable
@@ -66,6 +68,11 @@ public class PeersDialog extends BaseDialog {
         mProgressBar.setVisibility(View.INVISIBLE);
     }
 
+    public void updateP2pPeers(List<WifiP2pDevice> data){
+        mAdapter.setP2pDevices(data);
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
     public void updateBlueToothPeers(List<BluetoothDevice> bluetoothDevices){
         mAdapter.setBlueToothDevices(bluetoothDevices);
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -88,9 +95,16 @@ public class PeersDialog extends BaseDialog {
             notifyDataSetChanged();
         }
 
+        public void setP2pDevices(List<WifiP2pDevice> wifiP2pDevices){
+            mWifiP2pDevices.clear();
+            mWifiP2pDevices.addAll(wifiP2pDevices);
+            mIsSalutDevice = false;
+            notifyDataSetChanged();
+        }
+
         @Override
         public int getCount() {
-            return mIsSalutDevice ? mSalutDevices.size() : mBlueToothDevices.size();
+            return mIsSalutDevice ? mSalutDevices.size() : mWifiP2pDevices.size();
         }
 
         @Override
@@ -112,16 +126,17 @@ public class PeersDialog extends BaseDialog {
                 convertView.setTag(holder);
             }
 
-            String device = mIsSalutDevice ? mSalutDevices.get(position).deviceName : mBlueToothDevices.get(position).getName();
+            String device = mIsSalutDevice ? mSalutDevices.get(position).deviceName : mWifiP2pDevices.get(position).deviceName;
             holder = (ViewHolder)convertView.getTag();
             holder.device.setText(device);
             holder.device.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mIsSalutDevice){
-                        BusProvider.getInstance().post(new ConnectPeerEvent(mSalutDevices.get(position), null));
+                        BusProvider.getInstance().post(new ConnectPeerEvent(null, mSalutDevices.get(position), null));
                     } else {
-                        BusProvider.getInstance().post(new ConnectPeerEvent(null, mBlueToothDevices.get(position)));
+                        //BusProvider.getInstance().post(new ConnectPeerEvent(null, mBlueToothDevices.get(position)));
+                        BusProvider.getInstance().post(new ConnectPeerEvent(mWifiP2pDevices.get(position), null, null));
                     }
                 }
             });

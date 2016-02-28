@@ -1,6 +1,7 @@
 package com.xuf.www.gobang.interator;
 
 import android.bluetooth.BluetoothDevice;
+import android.net.wifi.p2p.WifiP2pDevice;
 
 import com.peak.salut.SalutDevice;
 import com.xuf.www.gobang.bean.Message;
@@ -35,7 +36,7 @@ public class NetInteractor {
 
     }
 
-    public void connectToHost(SalutDevice salutHost, BluetoothDevice blueToothHost) {
+    public void connectToHost(WifiP2pDevice wifiP2pDevice, SalutDevice salutHost, BluetoothDevice blueToothHost) {
 
     }
 }

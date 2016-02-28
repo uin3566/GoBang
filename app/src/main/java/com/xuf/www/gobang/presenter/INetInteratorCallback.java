@@ -1,6 +1,7 @@
 package com.xuf.www.gobang.presenter;
 
 import android.bluetooth.BluetoothDevice;
+import android.net.wifi.p2p.WifiP2pDevice;
 
 import com.peak.salut.SalutDevice;
 
@@ -22,6 +23,8 @@ public interface INetInteratorCallback {
     void onStartWifiServiceFailed();
 
     void onFindWifiPeers(List<SalutDevice> deviceList);
+
+    void onFindP2pPeers(List<WifiP2pDevice> deviceList);
 
     void onFindBlueToothPeers(List<BluetoothDevice> deviceList);
 

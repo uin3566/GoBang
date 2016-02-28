@@ -1,6 +1,7 @@
 package com.xuf.www.gobang.view.fragment;
 
 import android.bluetooth.BluetoothDevice;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -157,6 +158,14 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
     }
 
     @Override
+    public void onFindP2pPeers(List<WifiP2pDevice> deviceList) {
+        if (mIsHost){
+            return;
+        }
+        mDialogCenter.updateP2pPeers(deviceList);
+    }
+
+    @Override
     public void onFindWifiPeers(List<SalutDevice> deviceList) {
         mDialogCenter.updatePeers(deviceList);
     }
@@ -299,7 +308,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Subscribe
     public void onConnectPeer(ConnectPeerEvent event) {
-        mNetPresenter.connectToHost(event.mSalutDevice, event.mBlueToothDevice);
+        mNetPresenter.connectToHost(event.mP2pDevice, event.mSalutDevice, event.mBlueToothDevice);
     }
 
     @Subscribe
