@@ -5,8 +5,11 @@ GoBang
 ## 应用截图<br>
 ![](https://github.com/uin3566/GoBang/raw/master/screenshot/screenshot.png)
 
+##应用大致框架<br>
+![](https://github.com/uin3566/GoBang/raw/master/screenshot/app_frame.png)
+
 ## 主要运用
 * mvp模式
-* [salut](https://github.com/markrjr/Salut)
+* wifi直连库[salut](https://github.com/markrjr/Salut)
 * [materialdesign](https://github.com/navasmdc/MaterialDesignLibrary)
 * [eventbus](https://github.com/square/otto)
