@@ -7,6 +7,10 @@
     <TextView
         android:background="@drawable/selector_item_device"
         android:id="@+id/tv_device"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:textSize="15sp"

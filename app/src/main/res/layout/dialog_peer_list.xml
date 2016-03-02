@@ -20,7 +20,7 @@
             android:id="@+id/lv_peers"
             android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
         <com.gc.materialdesign.views.ButtonRectangle
             android:id="@+id/btn_cancel"
@@ -29,7 +29,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_width="100dp"
             android:layout_height="55dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp" />
 
     </LinearLayout>
 
