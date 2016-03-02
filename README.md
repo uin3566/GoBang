@@ -7,6 +7,6 @@ GoBang
 
 ## 主要运用
 * mvp
-* salut
-* materialdesign
-* eventbus
+* [salut](https://github.com/markrjr/Salut)
+* [materialdesign](https://github.com/navasmdc/MaterialDesignLibrary)
+* [eventbus](https://github.com/square/otto)
