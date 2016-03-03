@@ -12,6 +12,7 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.gc.materialdesign.views.ButtonRectangle;
 import com.peak.salut.SalutDevice;
 import com.squareup.otto.Subscribe;
+import com.xuf.www.gobang.EventBus.MoveBackAckEvent;
 import com.xuf.www.gobang.R;
 import com.xuf.www.gobang.bean.Message;
 import com.xuf.www.gobang.bean.Point;
@@ -28,6 +29,7 @@ import com.xuf.www.gobang.EventBus.WifiJoinGameEvent;
 import com.xuf.www.gobang.EventBus.WifiCancelPeerEvent;
 import com.xuf.www.gobang.util.GameJudger;
 import com.xuf.www.gobang.util.MessageWrapper;
+import com.xuf.www.gobang.util.OperationQueue;
 import com.xuf.www.gobang.util.ToastUtil;
 import com.xuf.www.gobang.view.dialog.DialogCenter;
 import com.xuf.www.gobang.widget.GoBangBoard;
@@ -42,16 +44,22 @@ import java.util.List;
 public class NetGameFragment extends BaseGameFragment implements INetView, GoBangBoard.PutChessListener
         , View.OnTouchListener, View.OnClickListener {
 
+    private static final int MOVE_BACK_TIMES = 2;
+
     private boolean mIsHost;
     private boolean mIsMePlay = false;
     private boolean mIsGameEnd = false;
     private boolean mIsOpponentLeaved = false;
     private boolean mCanClickConnect = true;
+    private int mLeftMoveBackTimes = MOVE_BACK_TIMES;
+
+    private OperationQueue mOperationQueue;
 
     private NetPresenter mNetPresenter;
 
     private DialogCenter mDialogCenter;
     private GoBangBoard mBoard;
+    private ButtonRectangle mMoveBack;
 
     private static final String NET_MODE = "netMode";
 
@@ -95,8 +103,9 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
         ButtonRectangle exitGame = (ButtonRectangle) view.findViewById(R.id.btn_exit);
         exitGame.setOnClickListener(this);
 
-        ButtonRectangle moveBack = (ButtonRectangle) view.findViewById(R.id.btn_move_back);
-        moveBack.setOnClickListener(this);
+        mMoveBack = (ButtonRectangle) view.findViewById(R.id.btn_move_back);
+        mMoveBack.setOnClickListener(this);
+        mMoveBack.setText(makeMoveBackString());
     }
 
     private void init() {
@@ -106,6 +115,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
         int gameMode = bundle.getInt(NET_MODE);
         mNetPresenter = new NetPresenter(getActivity(), this, gameMode);
         mNetPresenter.init();
+        mOperationQueue = new OperationQueue();
     }
 
     private void unInit() {
@@ -116,10 +126,33 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
         mBoard.clearBoard();
         mIsMePlay = mIsHost;
         mIsGameEnd = false;
+        mOperationQueue.clear();
+        mLeftMoveBackTimes = MOVE_BACK_TIMES;
+        mMoveBack.setText(makeMoveBackString());
+        mMoveBack.setEnabled(true);
     }
 
     private void sendMessage(Message message) {
         mNetPresenter.sendToDevice(message, mIsHost);
+    }
+
+    private void moveBackReq() {
+        if (mIsMePlay || mIsGameEnd) {
+            return;
+        }
+        Message message = MessageWrapper.getGameMoveBackReqMessage();
+        sendMessage(message);
+        mDialogCenter.showMoveBackWaitingDialog();
+    }
+
+    private void doMoveBack() {
+        mOperationQueue.removeLastOperation();
+        Point point = mOperationQueue.getLastOperation();
+        mBoard.moveBack(point);
+    }
+
+    private String makeMoveBackString() {
+        return "悔  棋" + "(" + mLeftMoveBackTimes + ")";
     }
 
     @Override
@@ -221,6 +254,25 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
                     }
                     mDialogCenter.dismissRestartWaitingDialog();
                     break;
+                case Message.MSG_TYPE_MOVE_BACK_REQ:
+                    if (mIsMePlay) {
+                        mDialogCenter.showMoveBackAckDialog();
+                    }
+                    break;
+                case Message.MSG_TYPE_MOVE_BACK_RESP:
+                    if (message.mAgreeMoveBack) {
+                        doMoveBack();
+                        mIsMePlay = true;
+                        mLeftMoveBackTimes--;
+                        mMoveBack.setText(makeMoveBackString());
+                        if (mLeftMoveBackTimes == 0) {
+                            mMoveBack.setEnabled(false);
+                        }
+                    } else {
+                        ToastUtil.showShort(getActivity(), "对方不同意你悔棋");
+                    }
+                    mDialogCenter.dismissMoveBackWaitingDialog();
+                    break;
                 case Message.MSG_TYPE_EXIT:
                     ToastUtil.showShort(getActivity(), "对方已离开游戏");
                     mIsMePlay = true;
@@ -245,6 +297,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
                 mDialogCenter.showRestartWaitingDialog();
                 break;
             case R.id.btn_move_back:
+                moveBackReq();
                 break;
             case R.id.btn_exit:
                 if (mIsOpponentLeaved) {
@@ -284,6 +337,9 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
             mIsMePlay = false;
             mIsGameEnd = true;
         }
+        Point point = new Point();
+        point.setXY(x, y);
+        mOperationQueue.addOperation(point);
     }
 
     @Subscribe
@@ -307,7 +363,7 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
 
     @Subscribe
     public void onConnectPeer(ConnectPeerEvent event) {
-        if (mCanClickConnect){
+        if (mCanClickConnect) {
             mNetPresenter.connectToHost(event.mSalutDevice, event.mBlueToothDevice);
             mCanClickConnect = false;
         }
@@ -349,6 +405,17 @@ public class NetGameFragment extends BaseGameFragment implements INetView, GoBan
             getActivity().finish();
         } else {
             mDialogCenter.dismissExitAckDialog();
+        }
+    }
+
+    @Subscribe
+    public void onMoveBackAck(MoveBackAckEvent event) {
+        Message ack = MessageWrapper.getGameMoveBackRespMessage(event.mAgreeMoveBack);
+        sendMessage(ack);
+        mDialogCenter.dismissMoveBackAckDialog();
+        if (event.mAgreeMoveBack) {
+            doMoveBack();
+            mIsMePlay = false;
         }
     }
 }

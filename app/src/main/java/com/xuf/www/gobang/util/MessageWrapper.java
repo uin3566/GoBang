@@ -53,4 +53,17 @@ public class MessageWrapper {
         message.mMessageType = Message.MSG_TYPE_EXIT;
         return message;
     }
+
+    public static Message getGameMoveBackReqMessage() {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_MOVE_BACK_REQ;
+        return message;
+    }
+
+    public static Message getGameMoveBackRespMessage(boolean agreeMoveBack) {
+        Message message = new Message();
+        message.mMessageType = Message.MSG_TYPE_MOVE_BACK_RESP;
+        message.mAgreeMoveBack = agreeMoveBack;
+        return message;
+    }
 }

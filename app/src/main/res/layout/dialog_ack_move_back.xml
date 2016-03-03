@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="150dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="对方请求悔棋"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btn_agree"
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="#1E88E5"
+            android:text="同意" />
+
+        <com.gc.materialdesign.views.ButtonRectangle
+            android:id="@+id/btn_disagree"
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="#1E88E5"
+            android:text="不同意" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -22,6 +22,8 @@ public class DialogCenter {
     private RestartWaitingDialog mRestartWaitingDialog;
     private RestartAckDialog mRestartAckDialog;
     private ExitAckDialog mExitAckDialog;
+    private MoveBackAckDialog mMoveBackAckDialog;
+    private MoveBackWaitingDialog mMoveBackWaitingDialog;
 
     public DialogCenter(FragmentActivity activity) {
         mFragmentManager = activity.getSupportFragmentManager();
@@ -32,11 +34,13 @@ public class DialogCenter {
         mWaitingDialog = new WaitingPlayerDialog();
         mWaitingDialog.setCancelable(false);
         mRestartWaitingDialog = new RestartWaitingDialog();
-        mRestartWaitingDialog.setCancelable(false);
         mRestartAckDialog = new RestartAckDialog();
         mRestartAckDialog.setCancelable(false);
         mExitAckDialog = new ExitAckDialog();
         mExitAckDialog.setCancelable(false);
+        mMoveBackAckDialog = new MoveBackAckDialog();
+        mMoveBackAckDialog.setCancelable(false);
+        mMoveBackWaitingDialog = new MoveBackWaitingDialog();
     }
 
     public void showCompositionDialog() {
@@ -67,7 +71,7 @@ public class DialogCenter {
         mPeersDialog.updateWifiPeers(data);
     }
 
-    public void updateBlueToothPeers(List<BluetoothDevice> data, boolean append){
+    public void updateBlueToothPeers(List<BluetoothDevice> data, boolean append) {
         mPeersDialog.updateBlueToothPeers(data, append);
     }
 
@@ -77,6 +81,14 @@ public class DialogCenter {
 
     public void dismissRestartWaitingDialog() {
         mRestartWaitingDialog.dismiss();
+    }
+
+    public void showMoveBackWaitingDialog() {
+        mMoveBackWaitingDialog.show(preShowDialog(MoveBackWaitingDialog.TAG), MoveBackWaitingDialog.TAG);
+    }
+
+    public void dismissMoveBackWaitingDialog() {
+        mMoveBackWaitingDialog.dismiss();
     }
 
     public void showRestartAckDialog() {
@@ -93,6 +105,14 @@ public class DialogCenter {
 
     public void dismissExitAckDialog() {
         mExitAckDialog.dismiss();
+    }
+
+    public void showMoveBackAckDialog() {
+        mMoveBackAckDialog.show(preShowDialog(MoveBackAckDialog.TAG), MoveBackAckDialog.TAG);
+    }
+
+    public void dismissMoveBackAckDialog() {
+        mMoveBackAckDialog.dismiss();
     }
 
     public void dismissWaitingAndComposition() {

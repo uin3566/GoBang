@@ -162,6 +162,20 @@ public class GoBangBoard extends View {
         return point;
     }
 
+    public void moveBack(Point currentPoint) {
+        mBoard[mLastPutX][mLastPutY] = Constants.CHESS_NONE;
+        if (currentPoint != null){
+            mLastPutX = currentPoint.x;
+            mLastPutY = currentPoint.y;
+            mShouldDrawRedFlag = true;
+        } else {
+            mLastPutX = 0;
+            mLastPutY = 0;
+            mShouldDrawRedFlag = false;
+        }
+        invalidate();
+    }
+
     public boolean putChess(boolean isWhite, int x, int y) {
         if (mBoard[x][y] != Constants.CHESS_NONE) {
             return false;
@@ -182,7 +196,7 @@ public class GoBangBoard extends View {
     }
 
     private void drawRedFlag(int x, int y) {
-        if (mShouldDrawRedFlag){
+        if (mShouldDrawRedFlag) {
             float coordinateX = BOARD_MARGIN + x * mGridWidth;
             float coordinateY = BOARD_MARGIN + y * mGridHeight;
             mPointPaint.setColor(Color.RED);
