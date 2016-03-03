@@ -13,3 +13,6 @@ GoBang
 
 ## 应用大致框架<br>
 ![](https://github.com/uin3566/GoBang/raw/master/screenshot/frame.png)
+
+## License
+[MIT](https://github.com/uin3566/GoBang/raw/master/LICENSE.md)
