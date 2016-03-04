@@ -12,7 +12,7 @@ GoBang
 ![](https://github.com/uin3566/GoBang/raw/master/screenshot/screenshot.png)
 
 ## 应用大致框架<br>
-![](https://github.com/uin3566/GoBang/raw/master/screenshot/frame.png)
+![](https://github.com/uin3566/GoBang/raw/master/screenshot/umlframe.png)
 
 ## License
 [MIT](https://github.com/uin3566/GoBang/raw/master/LICENSE.md)
