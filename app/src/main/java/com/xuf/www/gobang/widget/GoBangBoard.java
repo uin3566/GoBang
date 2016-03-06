@@ -39,7 +39,6 @@ public class GoBangBoard extends View {
     private Bitmap mWhiteChessBitmap;
     private Bitmap mBlackChessBitmap;
 
-    private Canvas mCanvas;
     private Paint mPointPaint;//画圆点
     private Paint mLinePaint;//画线
 
@@ -104,8 +103,8 @@ public class GoBangBoard extends View {
         mHorizontalLinePoints = new float[mLineCount * 4];
         mVerticalLinePoints = new float[mLineCount * 4];
 
-        float boardWidth = getWidth() - BOARD_MARGIN * 2;
-        float boardHeight = getHeight() - BOARD_MARGIN * 2;
+        float boardWidth = getMeasuredWidth() - BOARD_MARGIN * 2;
+        float boardHeight = getMeasuredHeight() - BOARD_MARGIN * 2;
 
         mGridWidth = boardWidth / (mLineCount - 1);
         for (int i = 0; i < mLineCount * 4; i += 4) {
@@ -124,10 +123,10 @@ public class GoBangBoard extends View {
         }
 
         float frameMargin = BOARD_MARGIN * 0.8f;
-        mBoardFramePoints = new float[]{frameMargin, frameMargin, getWidth() - frameMargin, frameMargin,//上横
-                frameMargin, getHeight() - frameMargin, getWidth() - frameMargin, getHeight() - frameMargin,//下横
-                frameMargin, frameMargin, frameMargin, getHeight() - frameMargin,//左竖
-                getWidth() - frameMargin, frameMargin, getWidth() - frameMargin, getHeight() - frameMargin};//右竖
+        mBoardFramePoints = new float[]{frameMargin, frameMargin, getMeasuredWidth() - frameMargin, frameMargin,//上横
+                frameMargin, getMeasuredHeight() - frameMargin, getMeasuredWidth() - frameMargin, getMeasuredHeight() - frameMargin,//下横
+                frameMargin, frameMargin, frameMargin, getMeasuredHeight() - frameMargin,//左竖
+                getMeasuredWidth() - frameMargin, frameMargin, getMeasuredWidth() - frameMargin, getMeasuredHeight() - frameMargin};//右竖
 
         mBlackPoints = new float[]{3 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
                 11 * mGridWidth + BOARD_MARGIN, 3 * mGridHeight + BOARD_MARGIN,
@@ -141,17 +140,16 @@ public class GoBangBoard extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         setMeasuredDimension(width, width);
+        calcLinePoints();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mCanvas = canvas;
-        calcLinePoints();
         drawLines(canvas);
         drawBlackPoints(canvas);
         drawChess(canvas);
-        drawRedFlag(mLastPutX, mLastPutY);
+        drawRedFlag(canvas);
     }
 
     public Point convertPoint(float x, float y) {
@@ -195,12 +193,12 @@ public class GoBangBoard extends View {
         return true;
     }
 
-    private void drawRedFlag(int x, int y) {
+    private void drawRedFlag(Canvas canvas) {
         if (mShouldDrawRedFlag) {
-            float coordinateX = BOARD_MARGIN + x * mGridWidth;
-            float coordinateY = BOARD_MARGIN + y * mGridHeight;
+            float coordinateX = BOARD_MARGIN + mLastPutX * mGridWidth;
+            float coordinateY = BOARD_MARGIN + mLastPutY * mGridHeight;
             mPointPaint.setColor(Color.RED);
-            mCanvas.drawCircle(coordinateX, coordinateY, DimenUtil.dp2px(mContext, BOARD_POINT_RADIUS_DP), mPointPaint);
+            canvas.drawCircle(coordinateX, coordinateY, DimenUtil.dp2px(mContext, BOARD_POINT_RADIUS_DP), mPointPaint);
         }
     }
 
