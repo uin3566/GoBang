@@ -9,61 +9,38 @@ import com.xuf.www.gobang.bean.Point;
 public class MessageWrapper {
 
     public static Message getHostBeginMessage() {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_HOST_BEGIN;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_HOST_BEGIN).build();
     }
 
     public static Message getHostBeginAckMessage() {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_BEGIN_ACK;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_BEGIN_ACK).build();
     }
 
     public static Message getSendDataMessage(Point point, boolean isWhite) {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_GAME_DATA;
-        message.mGameData = point;
-        message.mIsWhite = isWhite;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_GAME_DATA).gameData(point).isWhite(isWhite).build();
     }
 
     public static Message getGameEndMessage(String endMessage) {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_GAME_END;
-        message.mMessage = endMessage;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_GAME_END).message(endMessage).build();
     }
 
     public static Message getGameRestartReqMessage() {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_GAME_RESTART_REQ;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_GAME_RESTART_REQ).build();
     }
 
     public static Message getGameRestartRespMessage(boolean agreeRestart) {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_GAME_RESTART_RESP;
-        message.mAgreeRestart = agreeRestart;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_GAME_RESTART_RESP).agreeRestart(agreeRestart).build();
     }
 
     public static Message getGameExitMessage() {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_EXIT;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_EXIT).build();
     }
 
     public static Message getGameMoveBackReqMessage() {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_MOVE_BACK_REQ;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_MOVE_BACK_REQ).build();
     }
 
     public static Message getGameMoveBackRespMessage(boolean agreeMoveBack) {
-        Message message = new Message();
-        message.mMessageType = Message.MSG_TYPE_MOVE_BACK_RESP;
-        message.mAgreeMoveBack = agreeMoveBack;
-        return message;
+        return new Message.Builder(Message.MSG_TYPE_MOVE_BACK_RESP).agreeMoveBack(agreeMoveBack).build();
     }
 }
